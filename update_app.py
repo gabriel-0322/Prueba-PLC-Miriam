@@ -4107,7 +4107,26 @@ EstadoSanitario etapaActual = IDLE;
     function pressStop() {
       initAudio();
       PLC.I0_2 = true;
-      logEvent('INFO', 'Pulsador de STOP accionado (I0.2=1).');
+      // Detener cualquier modo demo activo
+      PLC.demoMode = false;
+      const demoBtn = document.getElementById('demoBtn');
+      const demoTxt = document.getElementById('demoBtnText');
+      if (demoBtn) demoBtn.classList.remove('active');
+      if (demoTxt) demoTxt.textContent = 'Demo Automática';
+
+      // Detener ciclo, retirar manos y presencia
+      PLC.I0_1 = false;
+      PLC.M0_0 = false;
+      PLC.M0_5 = false;
+      PLC.M_ACCESS_GRANT = false;
+      PLC.T1.ET = 0; PLC.T1.DN = false; PLC.T1.IN = false;
+      PLC.T2.ET = 0; PLC.T2.DN = false; PLC.T2.IN = false;
+      PLC.T3.ET = 0; PLC.T3.DN = false; PLC.T3.IN = false;
+      PLC.T4.ET = 0; PLC.T4.DN = false; PLC.T4.IN = false;
+      PLC.T5.ET = 0; PLC.T5.DN = false; PLC.T5.IN = false;
+      PLC.Q0_0 = false; PLC.Q0_1 = false; PLC.Q0_2 = false;
+      PLC.Q0_3 = false; PLC.Q0_5 = false; PLC.Q0_4 = true;
+      logEvent('INFO', 'Pulsador de STOP accionado (I0.2=1). Sistema detenido y en reposo.');
       setTimeout(() => { PLC.I0_2 = false; }, 300);
     }
 
@@ -4133,7 +4152,26 @@ EstadoSanitario etapaActual = IDLE;
       } else {
         btn.classList.remove('active');
         txt.textContent = 'Demo Automática';
-        logEvent('INFO', 'Modo Demostración Automática DESACTIVADO.');
+        // Reset completo e inmediato al detener el simulador
+        PLC.demoStep = 0;
+        PLC.demoTimer = 0;
+        PLC.I0_0 = false;
+        PLC.I0_1 = false;
+        PLC.M0_0 = false;
+        PLC.M0_5 = false;
+        PLC.M_ACCESS_GRANT = false;
+        PLC.T1.ET = 0; PLC.T1.DN = false; PLC.T1.IN = false;
+        PLC.T2.ET = 0; PLC.T2.DN = false; PLC.T2.IN = false;
+        PLC.T3.ET = 0; PLC.T3.DN = false; PLC.T3.IN = false;
+        PLC.T4.ET = 0; PLC.T4.DN = false; PLC.T4.IN = false;
+        PLC.T5.ET = 0; PLC.T5.DN = false; PLC.T5.IN = false;
+        PLC.Q0_0 = false;
+        PLC.Q0_1 = false;
+        PLC.Q0_2 = false;
+        PLC.Q0_3 = false;
+        PLC.Q0_5 = false;
+        PLC.Q0_4 = true;
+        logEvent('INFO', 'Modo Demostración DETENIDO. Sistema en reposo absoluto.');
       }
     }
 
@@ -4149,28 +4187,35 @@ EstadoSanitario etapaActual = IDLE;
         PLC.demoStep = 1;
         PLC.demoTimer = 0;
       }
-      // Paso 1: Colocar manos
-      else if (PLC.demoStep === 1 && PLC.demoTimer > 1.0) {
+      // Paso 1: Colocar manos deliberadamente bajo el sensor óptico
+      else if (PLC.demoStep === 1 && PLC.demoTimer > 1.2) {
         PLC.I0_1 = true;
         PLC.demoStep = 2;
         PLC.demoTimer = 0;
       }
-      // Paso 2: Durante el ciclo, esperar desbloqueo
+      // Paso 2: Durante el ciclo, esperar desbloqueo de puerta
       else if (PLC.demoStep === 2 && PLC.M_ACCESS_GRANT) {
         PLC.demoStep = 3;
         PLC.demoTimer = 0;
       }
-      // Paso 3: Puerta abierta, retirar manos y cruzar
-      else if (PLC.demoStep === 3 && PLC.demoTimer > 1.5) {
+      // Paso 3: Puerta abierta, retirar manos y cruzar hacia el área limpia
+      else if (PLC.demoStep === 3 && PLC.demoTimer > 2.0) {
         PLC.I0_1 = false;
         PLC.demoStep = 4;
         PLC.demoTimer = 0;
       }
-      // Paso 4: Final del paso, reiniciar operario
+      // Paso 4: Final del paso por la puerta (concluye la demo al 100%)
       else if (PLC.demoStep === 4 && !PLC.M_ACCESS_GRANT) {
         PLC.I0_0 = false;
+        PLC.I0_1 = false;
+        PLC.demoMode = false;
+        const btn = document.getElementById('demoBtn');
+        const txt = document.getElementById('demoBtnText');
+        if (btn) btn.classList.remove('active');
+        if (txt) txt.textContent = 'Demo Automática';
         PLC.demoStep = 0;
         PLC.demoTimer = 0;
+        logEvent('INFO', 'Demostración Automática COMPLETADA al 100%. Sistema en reposo.');
       }
     }
 
@@ -4319,15 +4364,23 @@ EstadoSanitario etapaActual = IDLE;
         if (PLC.T5.ET >= PLC.T5.PT) {
           PLC.T5.ET = PLC.T5.PT;
           PLC.T5.DN = true;
-          // Auto-Reset
+          // Auto-Reset: El operario ya ingresó al área limpia, por lo que abandona la esclusa
+          PLC.I0_0 = false; // Ya no está en el tapete de entrada
+          PLC.I0_1 = false; // Manos retiradas del lavamanos
           PLC.M_ACCESS_GRANT = false;
           PLC.M0_5 = false;
           PLC.M0_0 = false;
           PLC.T5.ET = 0;
           PLC.T5.DN = false;
           PLC.T5.IN = false;
+          PLC.Q0_0 = false;
+          PLC.Q0_1 = false;
+          PLC.Q0_2 = false;
+          PLC.Q0_3 = false;
+          PLC.Q0_5 = false;
+          PLC.Q0_4 = true;
           playClick();
-          logEvent('INFO', 'Tiempo de paso (10s) concluido. Puerta rebloqueada. Sistema en espera.');
+          logEvent('INFO', 'Tiempo de paso (10s) concluido. Operario ingresó al área limpia. Puerta rebloqueada. Sistema en espera.');
         }
       } else {
         PLC.T5.ET = 0;
@@ -4335,11 +4388,12 @@ EstadoSanitario etapaActual = IDLE;
       }
 
       // 8. ASIGNACIÓN DE SALIDAS DIGITALES (Q0.0 A Q0.5)
+      // Interbloqueo físico: Ninguna salida de fluidos puede activarse si NO hay presencia y manos activas
       if (PLC.M_RUN) {
-        PLC.Q0_0 = PLC.M0_0 && !PLC.T1.DN;
-        PLC.Q0_5 = PLC.M0_0 && PLC.T1.DN && !PLC.T2.DN;
-        PLC.Q0_1 = PLC.M0_0 && PLC.T2.DN && !PLC.T3.DN;
-        PLC.Q0_2 = PLC.M0_0 && PLC.T3.DN && !PLC.T4.DN;
+        PLC.Q0_0 = PLC.M0_0 && !PLC.T1.DN && PLC.I0_0 && PLC.I0_1;
+        PLC.Q0_5 = PLC.M0_0 && PLC.T1.DN && !PLC.T2.DN && PLC.I0_1;
+        PLC.Q0_1 = PLC.M0_0 && PLC.T2.DN && !PLC.T3.DN && PLC.I0_1;
+        PLC.Q0_2 = PLC.M0_0 && PLC.T3.DN && !PLC.T4.DN && PLC.I0_1;
         PLC.Q0_3 = PLC.M_ACCESS_GRANT && !PLC.T5.DN;
         PLC.Q0_4 = !PLC.Q0_3;
       } else {
@@ -4461,6 +4515,8 @@ EstadoSanitario etapaActual = IDLE;
         stepName = 'SISTEMA DETENIDO / PARO ACTIVO';
       } else if (!PLC.M_EPP_OK) {
         stepName = '⚠ INFRACCIÓN EPP: COFIA O CUBREBOCAS AUSENTES';
+      } else if (PLC.I0_0 && !PLC.I0_1 && !PLC.M0_0 && !PLC.M0_5) {
+        stepName = 'OPERARIO EN ESCLUSA: COLOQUE LAS MANOS BAJO EL LAVAMANOS (I0.1)';
       } else if (PLC.M0_0 && !PLC.T1.DN) {
         activeStep = 1;
         stepName = '1. DOSIFICANDO JABÓN LÍQUIDO';
