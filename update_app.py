@@ -1,0 +1,4802 @@
+# -*- coding: utf-8 -*-
+"""
+Python generator script to produce the updated index.html for SanitiGate PLC v3.0.
+"""
+
+import sys
+
+def write_html():
+    target = r"C:\Users\sveen\.gemini\antigravity\scratch\sanitigate-plc\index.html"
+    
+    with open(target, "w", encoding="utf-8") as f:
+        # We write sections cleanly
+        f.write(HTML_PART_1)
+        f.write(HTML_PART_2)
+        f.write(HTML_PART_3)
+        f.write(HTML_PART_4)
+        f.write(HTML_PART_5)
+    
+    print(f"File successfully written to {target}")
+
+HTML_PART_1 = """<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SanitiGate PLC — Esclusa Sanitaria Automatizada & Validación EPP</title>
+  <style>
+    /* ==========================================================================
+       ESTILOS GENERALES Y PALETA DE COLORES CLEAN TECH / CLÍNICA LUMINOSA
+       ========================================================================== */
+    :root {
+      --bg-main: #F8FAFC;
+      --surface: #FFFFFF;
+      --border-color: #E2E8F0;
+      --border-focus: #0284C7;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --accent-blue: #0284C7;
+      --navy-dark: #1E3A8A;
+      --navy-light: #3B82F6;
+      
+      /* Semáforo Sanitario ISA-101 & Actuadores */
+      --red-lock: #DC2626;
+      --yellow-scrub: #F59E0B;
+      --green-unlock: #16A34A;
+      --soap-color: #38BDF8;
+      --water-color: #0EA5E9;
+      --mist-color: #14B8A6;
+      --steel-base: #94A3B8;
+      --steel-light: #CBD5E1;
+      --steel-dark: #475569;
+      --epp-scanner: #06B6D4;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER INDUSTRIAL */
+    header.app-header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--border-color);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--navy-dark), var(--accent-blue));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+
+    .brand-info h1 {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .plc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--border-color);
+      background: #F1F5F9;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+
+    .plc-badge.run {
+      background: #DCFCE7;
+      color: #15803D;
+      border-color: #86EFAC;
+    }
+
+    .plc-badge.alarm {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border-color: #FCA5A5;
+      animation: pulse-danger 1s infinite alternate;
+    }
+
+    .plc-badge.emergency {
+      background: #991B1B;
+      color: #FFFFFF;
+      border-color: #7F1D1D;
+      animation: pulse-danger 0.5s infinite alternate;
+    }
+
+    .dot-indicator {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .control-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .control-btn:hover {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    .control-btn.active {
+      background: var(--navy-dark);
+      color: #FFF;
+      border-color: var(--navy-dark);
+    }
+
+    .btn-demo {
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      color: #FFFFFF;
+      border: none;
+    }
+    .btn-demo:hover {
+      background: linear-gradient(135deg, #0369A1, #075985);
+    }
+
+    /* PESTAÑAS PRINCIPALES */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--navy-dark);
+      background: #F1F5F9;
+    }
+
+    .tab-btn.active {
+      color: var(--navy-dark);
+      background: #E0F2FE;
+      border: 1px solid #BAE6FD;
+      font-weight: 700;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    main.app-content {
+      flex: 1;
+      padding: 16px 24px;
+      max-width: 1750px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-danger {
+      from { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      to { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    }
+
+    /* BARRA SELECTORA DE SUBSISTEMAS (MODALIDAD DE SIMULACIÓN) */
+    .subsystem-bar-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .subsystem-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .subsystem-nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-subsystem {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-subsystem:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+    }
+
+    .btn-subsystem.active {
+      background: linear-gradient(135deg, var(--navy-dark), #0369A1);
+      color: #FFFFFF;
+      border-color: var(--navy-dark);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+    }
+
+    .subsystem-badge-tag {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.08);
+    }
+    .btn-subsystem.active .subsystem-badge-tag {
+      background: rgba(255,255,255,0.25);
+      color: #FFF;
+    }
+
+    /* ALERTA SANITARIA FLOTANTE */
+    .alert-banner {
+      display: none;
+      background: #FEF2F2;
+      border: 1px solid #F87171;
+      border-left: 6px solid #DC2626;
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      color: #991B1B;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      align-items: center;
+      justify-content: space-between;
+      animation: slideDown 0.3s ease-out;
+    }
+    .alert-banner.show {
+      display: flex;
+    }
+    .alert-banner .alert-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GRID DE SIMULACIÓN (3 COLUMNAS) */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 450px 410px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 1450px) {
+      .sim-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .col-ladder {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .sim-grid {
+        grid-template-columns: 1fr;
+      }
+      .col-ladder {
+        grid-column: span 1;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-header h2 {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-sub {
+      font-size: 0.7rem;
+      background: #F1F5F9;
+      color: var(--text-muted);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       ZONA A: ESTACIÓN FÍSICA 2D CON SUBSISTEMAS EPP Y LAVAMANOS
+       ========================================================================== */
+    .station-viewport {
+      position: relative;
+      background: linear-gradient(180deg, #F1F5F9 0%, #E2E8F0 100%);
+      border: 2px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      height: 520px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+    }
+
+    /* Modos de zoom / enfoque según subsistema seleccionado */
+    .station-viewport.focus-hair {
+      background: radial-gradient(circle at 100px 100px, #E0F2FE 0%, #E2E8F0 100%);
+    }
+    .station-viewport.focus-mask {
+      background: radial-gradient(circle at 100px 140px, #ECFDF5 0%, #E2E8F0 100%);
+    }
+    .station-viewport.focus-hands {
+      background: radial-gradient(circle at 120px 240px, #E0F2FE 0%, #E2E8F0 100%);
+    }
+
+    /* Fondo Quirófano / Cleanroom */
+    .cleanroom-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 140px;
+      height: 100%;
+      background: #ECFDF5;
+      border-left: 2px dashed #6EE7B7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 14px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #065F46;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .cleanroom-tag-icon {
+      font-size: 1.8rem;
+      margin-top: 12px;
+      opacity: 0.45;
+    }
+
+    /* ESCÁNER SUPERIOR DE VISIÓN ARTIFICIAL (COFIA I0.4) */
+    .scanner-hair-housing {
+      position: absolute;
+      top: 12px;
+      left: 75px;
+      width: 70px;
+      background: #1E293B;
+      border-radius: 4px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+      z-index: 20;
+    }
+
+    .scanner-lens {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #0284C7;
+      border: 2px solid #38BDF8;
+      box-shadow: 0 0 8px #0284C7;
+      transition: all 0.2s;
+    }
+    .scanner-lens.fault {
+      background: #DC2626;
+      border-color: #F87171;
+      box-shadow: 0 0 10px #DC2626;
+    }
+
+    .scanner-label {
+      font-size: 0.58rem;
+      color: #94A3B8;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Haz de Luz Láser Escáner Capilar (I0.4) */
+    .scanner-hair-beam {
+      position: absolute;
+      top: 38px;
+      left: 65px;
+      width: 90px;
+      height: 120px;
+      background: linear-gradient(180deg, rgba(6, 182, 212, 0.4) 0%, rgba(6, 182, 212, 0.05) 100%);
+      clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+      pointer-events: none;
+      display: none;
+      animation: scan-pulse 1s infinite alternate ease-in-out;
+      z-index: 12;
+    }
+    .scanner-hair-beam.active {
+      display: block;
+    }
+    .scanner-hair-beam.fault {
+      background: linear-gradient(180deg, rgba(220, 38, 38, 0.45) 0%, rgba(220, 38, 38, 0.08) 100%);
+    }
+
+    /* ESCÁNER FACIAL / CUBREBOCAS (I0.5) */
+    .scanner-face-housing {
+      position: absolute;
+      top: 90px;
+      left: 10px;
+      width: 32px;
+      height: 48px;
+      background: #1E293B;
+      border-radius: 4px;
+      border-left: 3px solid #0284C7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+    .scanner-face-housing.fault {
+      border-left-color: #DC2626;
+    }
+
+    .scanner-face-beam {
+      position: absolute;
+      top: 95px;
+      left: 42px;
+      width: 75px;
+      height: 38px;
+      border: 1px dashed #0284C7;
+      background: rgba(2, 132, 199, 0.12);
+      border-radius: 4px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: #0369A1;
+      pointer-events: none;
+      z-index: 12;
+    }
+    .scanner-face-beam.active {
+      display: flex;
+    }
+    .scanner-face-beam.fault {
+      border-color: #DC2626;
+      background: rgba(220, 38, 38, 0.18);
+      color: #991B1B;
+    }
+
+    @keyframes scan-pulse {
+      0% { opacity: 0.6; }
+      100% { opacity: 0.95; }
+    }
+
+    /* Baliza Semáforo Industrial (Q0.4, Q0.5, Q0.3) */
+    .stack-light {
+      position: absolute;
+      top: 14px;
+      left: 195px;
+      background: #334155;
+      padding: 5px;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      z-index: 25;
+    }
+
+    .stack-lamp {
+      width: 20px;
+      height: 16px;
+      border-radius: 4px;
+      opacity: 0.25;
+      transition: all 0.15s ease-in-out;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+
+    .lamp-red { background: #EF4444; }
+    .lamp-red.active {
+      opacity: 1;
+      box-shadow: 0 0 14px #EF4444, inset 0 0 6px #FFF;
+      animation: blink-light 1.2s infinite ease-in-out;
+    }
+
+    .lamp-yellow { background: #F59E0B; }
+    .lamp-yellow.active {
+      opacity: 1;
+      box-shadow: 0 0 14px #F59E0B, inset 0 0 6px #FFF;
+      animation: blink-light 0.8s infinite ease-in-out;
+    }
+
+    .lamp-green { background: #22C55E; }
+    .lamp-green.active {
+      opacity: 1;
+      box-shadow: 0 0 16px #22C55E, inset 0 0 8px #FFF;
+      animation: blink-light 1s infinite ease-in-out;
+    }
+
+    @keyframes blink-light {
+      0%, 100% { filter: brightness(1.2); }
+      50% { filter: brightness(0.9); }
+    }
+
+    /* Módulo de Lavamanos Acero Inox */
+    .sink-station {
+      position: absolute;
+      top: 150px;
+      left: 20px;
+      width: 230px;
+      height: 220px;
+      background: #E2E8F0;
+      border: 2px solid #94A3B8;
+      border-radius: var(--radius-md);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+      z-index: 10;
+    }
+
+    .sink-panel-tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #475569;
+      background: #CBD5E1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Dispensadores */
+    .dispensers-row {
+      display: flex;
+      justify-content: space-around;
+      width: 92%;
+      height: 48px;
+      position: relative;
+    }
+
+    .dispenser-head {
+      width: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .dispenser-nozzle {
+      width: 14px;
+      height: 22px;
+      background: #64748B;
+      border-radius: 3px;
+      border-bottom: 3px solid #334155;
+    }
+
+    .dispenser-tag {
+      font-size: 0.6rem;
+      font-weight: 800;
+      margin-top: 2px;
+      color: #334155;
+    }
+
+    /* Animaciones de Fluidos */
+    .fluid-stream {
+      position: absolute;
+      top: 22px;
+      width: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      z-index: 5;
+    }
+    .fluid-stream.active { display: flex; }
+
+    .soap-stream .soap-drop {
+      width: 12px;
+      height: 14px;
+      background: #38BDF8;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #38BDF8;
+      margin-bottom: 4px;
+      animation: drop-fall 0.4s infinite linear;
+    }
+    @keyframes drop-fall {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.9; }
+      100% { transform: translateY(45px) scale(1.2); opacity: 0.2; }
+    }
+
+    .water-stream .water-jet {
+      width: 8px;
+      height: 50px;
+      background: linear-gradient(180deg, #0EA5E9, #38BDF8);
+      border-radius: 4px;
+      opacity: 0.85;
+      box-shadow: 0 0 8px rgba(14, 165, 233, 0.7);
+      animation: water-flow 0.2s infinite alternate ease-in-out;
+    }
+    @keyframes water-flow {
+      0% { transform: scaleX(0.9) scaleY(0.98); }
+      100% { transform: scaleX(1.1) scaleY(1.02); }
+    }
+
+    .spray-stream .mist-cloud {
+      width: 38px;
+      height: 48px;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.75) 10%, rgba(20, 184, 166, 0.1) 70%, transparent 100%);
+      border-radius: 50%;
+      animation: mist-puff 0.3s infinite ease-out;
+    }
+    @keyframes mist-puff {
+      0% { transform: translateY(0) scale(0.6); opacity: 0.3; }
+      50% { transform: translateY(20px) scale(1.1); opacity: 0.9; }
+      100% { transform: translateY(40px) scale(1.4); opacity: 0.1; }
+    }
+
+    /* Bacha de Lavamanos */
+    .sink-basin {
+      width: 190px;
+      height: 65px;
+      background: linear-gradient(180deg, #CBD5E1 0%, #94A3B8 100%);
+      border-radius: 0 0 50px 50px;
+      border: 3px solid #64748B;
+      border-top: 4px solid #475569;
+      position: relative;
+      margin-top: 26px;
+      overflow: hidden;
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.25);
+    }
+
+    .basin-drain {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 10px;
+      background: #334155;
+      border-radius: 50%;
+    }
+
+    /* Sensor Infrarrojo de Manos (I0.1) */
+    .ir-sensor-beam {
+      position: absolute;
+      top: 52px;
+      left: 30px;
+      width: 170px;
+      height: 25px;
+      border-top: 1px dashed rgba(220, 38, 38, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #991B1B;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+    .ir-sensor-beam.detecting {
+      background: rgba(34, 197, 94, 0.15);
+      border-top: 2px solid #16A34A;
+      color: #166534;
+    }
+
+    /* Manos del Operario bajo el grifo */
+    .avatar-hands {
+      position: absolute;
+      top: 56px;
+      left: 75px;
+      width: 80px;
+      height: 40px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 15;
+    }
+    .avatar-hands.present { display: flex; }
+    .avatar-hands.scrubbing {
+      animation: hand-scrub 0.35s infinite alternate ease-in-out;
+    }
+    @keyframes hand-scrub {
+      0% { transform: translateX(-6px) rotate(-4deg); }
+      100% { transform: translateX(6px) rotate(4deg); }
+    }
+    .hand-icon { font-size: 1.8rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+    /* Puerta / Esclusa con Cerradura Electromagnética (Q0.3) */
+    .door-frame {
+      position: absolute;
+      top: 40px;
+      right: 25px;
+      width: 110px;
+      height: 430px;
+      border: 4px solid #475569;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 4px;
+      perspective: 700px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 20;
+    }
+
+    .mag-lock {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 32px;
+      height: 18px;
+      background: #1E293B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 0 0 4px;
+      z-index: 22;
+    }
+
+    .mag-lock-led {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #DC2626;
+      box-shadow: 0 0 6px #DC2626;
+      transition: all 0.2s;
+    }
+    .mag-lock-led.unlocked {
+      background: #16A34A;
+      box-shadow: 0 0 8px #16A34A;
+    }
+
+    .door-wing {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(186, 230, 253, 0.5) 0%, rgba(224, 242, 254, 0.2) 100%);
+      border-right: 4px solid #64748B;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transform-origin: left center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .door-wing.open { transform: rotateY(-80deg); }
+
+    .door-handle {
+      width: 10px;
+      height: 60px;
+      background: #475569;
+      border-radius: 3px;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .door-status-text {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #1E3A8A;
+      background: rgba(255,255,255,0.85);
+      padding: 4px 6px;
+      border-radius: 4px;
+      text-align: center;
+      letter-spacing: 0.05em;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* OPERARIO HUMANO (AVATAR MODULAR) */
+    .operator-avatar {
+      position: absolute;
+      bottom: 25px;
+      left: -90px;
+      width: 80px;
+      height: 170px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 18;
+    }
+
+    .operator-avatar.present { left: 85px; }
+    .operator-avatar.passed { left: 325px; }
+
+    .avatar-head {
+      width: 48px;
+      height: 48px;
+      background: #FED7AA;
+      border-radius: 50%;
+      border: 2px solid #78350F;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Cabello Expuesto vs Cofia Quirúrgica */
+    .avatar-hair-exposed {
+      position: absolute;
+      top: -6px;
+      width: 50px;
+      height: 22px;
+      background: #451A03;
+      border-radius: 16px 16px 0 0;
+      display: block;
+    }
+    .avatar-hair-exposed::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 2px;
+      width: 8px;
+      height: 10px;
+      background: #451A03;
+      border-radius: 50%;
+      box-shadow: 38px 0 0 #451A03;
+    }
+
+    .avatar-hairnet {
+      position: absolute;
+      top: -8px;
+      width: 52px;
+      height: 28px;
+      background: #0284C7;
+      border-radius: 20px 20px 0 0;
+      border: 1px dashed #E0F2FE;
+      box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
+      display: none;
+      z-index: 3;
+    }
+    .avatar-hairnet.visible { display: block; }
+
+    /* Cubrebocas / Mascarilla Facial */
+    .avatar-face-features {
+      position: absolute;
+      top: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .avatar-eyes {
+      display: flex;
+      gap: 12px;
+    }
+    .avatar-eye {
+      width: 4px;
+      height: 4px;
+      background: #1E293B;
+      border-radius: 50%;
+    }
+    .avatar-mouth {
+      width: 10px;
+      height: 3px;
+      background: #991B1B;
+      border-radius: 2px;
+      margin-top: 6px;
+    }
+
+    .avatar-mask {
+      position: absolute;
+      bottom: 0px;
+      width: 36px;
+      height: 22px;
+      background: #E0F2FE;
+      border: 1.5px solid #0284C7;
+      border-radius: 4px 4px 8px 8px;
+      display: none;
+      z-index: 4;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .avatar-mask.visible { display: block; }
+    .avatar-mask::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 2px;
+      right: 2px;
+      height: 1px;
+      background: #BAE6FD;
+      box-shadow: 0 4px 0 #BAE6FD;
+    }
+
+    .avatar-body {
+      width: 62px;
+      height: 85px;
+      background: #FFFFFF;
+      border: 2px solid #0284C7;
+      border-radius: 12px 12px 4px 4px;
+      margin-top: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .avatar-badge {
+      font-size: 0.55rem;
+      font-weight: 800;
+      color: #0369A1;
+      background: #E0F2FE;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* Alfombra Sanitaria con Sensor de Presencia (I0.0) */
+    .sanitary-mat {
+      position: absolute;
+      bottom: 12px;
+      left: 70px;
+      width: 120px;
+      height: 24px;
+      background: repeating-linear-gradient(45deg, #FCD34D, #FCD34D 10px, #000 10px, #000 20px);
+      border: 2px solid #78350F;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mat-inner {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+    .mat-inner.active {
+      background: #16A34A;
+      color: #FFF;
+      box-shadow: 0 0 8px #22C55E;
+    }
+
+    /* PANEL DE CONTROLES HUMANOS / SENSORES FÍSICOS */
+    .human-controls {
+      margin-top: 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .controls-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .toggle-row-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .btn-toggle-input {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-toggle-input:hover {
+      border-color: #94A3B8;
+      background: #F1F5F9;
+    }
+    .btn-toggle-input.active {
+      background: #E0F2FE;
+      border-color: #38BDF8;
+      color: #0369A1;
+    }
+
+    .badge-io-state {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      font-weight: 700;
+      background: #E2E8F0;
+      color: #475569;
+    }
+    .btn-toggle-input.active .badge-io-state {
+      background: #0284C7;
+      color: #FFF;
+    }
+
+    .fault-btns-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-fault-trigger {
+      background: #FFF1F2;
+      border: 1px solid #FECDD3;
+      color: #BE123C;
+      font-weight: 700;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      transition: all 0.2s;
+    }
+    .btn-fault-trigger:hover {
+      background: #FFE4E6;
+      border-color: #FDA4AF;
+    }
+"""
+
+HTML_PART_2 = """
+    /* ==========================================================================
+       ZONA B: TABLERO DE CONTROL HMI Y MONITOR I/O
+       ========================================================================== */
+    .hmi-display {
+      background: #0F172A;
+      color: #F8FAFC;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+      border: 1px solid #334155;
+    }
+
+    .stage-indicator-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: #94A3B8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .stage-name-box {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #38BDF8;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* BADGES DE VALIDACIÓN EPP EN HMI */
+    .epp-status-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .epp-badge-pill {
+      background: #1E293B;
+      border: 1px solid #334155;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #94A3B8;
+    }
+    .epp-badge-pill.valid {
+      background: rgba(22, 163, 74, 0.15);
+      border-color: #16A34A;
+      color: #4ADE80;
+    }
+    .epp-badge-pill.invalid {
+      background: rgba(220, 38, 38, 0.15);
+      border-color: #DC2626;
+      color: #F87171;
+    }
+
+    /* Reloj Circular y Cuenta Regresiva */
+    .timer-center-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .countdown-circle {
+      position: relative;
+      width: 90px;
+      height: 90px;
+    }
+
+    .countdown-circle svg {
+      transform: rotate(-90deg);
+      width: 90px;
+      height: 90px;
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #334155;
+      stroke-width: 8;
+    }
+
+    .circle-progress {
+      fill: none;
+      stroke: #38BDF8;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 238;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.1s linear, stroke 0.3s;
+    }
+
+    .timer-text-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #FFF;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-meta-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-row {
+      font-size: 0.72rem;
+      color: #94A3B8;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .meta-val {
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .global-bar-wrap {
+      margin-top: 8px;
+    }
+    .global-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: #94A3B8;
+      margin-bottom: 3px;
+      font-weight: 600;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 6px;
+      background: #334155;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38BDF8, #22C55E);
+      border-radius: 9999px;
+      transition: width 0.1s linear;
+    }
+
+    /* Contador CTU C1 */
+    .counter-display-card {
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .counter-left h3 {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .counter-left p {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .counter-digits {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #15803D;
+      background: #DCFCE7;
+      border: 1px solid #86EFAC;
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.15em;
+    }
+
+    /* Botonera Industrial */
+    .industrial-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn-estop {
+      grid-column: span 2;
+      background: linear-gradient(180deg, #DC2626 0%, #991B1B 100%);
+      color: #FFF;
+      border: 3px solid #7F1D1D;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-estop:hover { filter: brightness(1.1); }
+    .btn-estop.latched {
+      background: #7F1D1D;
+      box-shadow: inset 0 3px 8px rgba(0,0,0,0.6);
+      border-color: #F87171;
+      animation: pulse-danger 0.5s infinite alternate;
+    }
+
+    .btn-stop {
+      background: #475569;
+      color: #FFF;
+      border: 2px solid #334155;
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-stop:hover { background: #334155; }
+
+    .btn-reset-cnt {
+      background: #E2E8F0;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-reset-cnt:hover { background: #CBD5E1; }
+
+    /* Monitor I/O (LEDs Digitales 24V DC) */
+    .io-rack {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .io-header-tab {
+      background: #F1F5F9;
+      padding: 6px 12px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .io-led-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 8px;
+      background: var(--surface);
+    }
+
+    .io-led-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 3px 5px;
+      border-radius: 4px;
+      background: #F8FAFC;
+    }
+
+    .plc-led {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #CBD5E1;
+      border: 1px solid #94A3B8;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .plc-led.active-in {
+      background: #22C55E;
+      border-color: #16A34A;
+      box-shadow: 0 0 6px #22C55E;
+    }
+    .plc-led.active-out {
+      background: #0284C7;
+      border-color: #0369A1;
+      box-shadow: 0 0 6px #0284C7;
+    }
+    .plc-led.active-red {
+      background: #EF4444;
+      border-color: #DC2626;
+      box-shadow: 0 0 6px #EF4444;
+    }
+    .plc-led.active-amber {
+      background: #F59E0B;
+      border-color: #D97706;
+      box-shadow: 0 0 6px #F59E0B;
+    }
+
+    /* SCADA Log */
+    .scada-log-wrap {
+      margin-top: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .scada-log-header {
+      background: #F1F5F9;
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+    }
+
+    .scada-log-body {
+      height: 110px;
+      overflow-y: auto;
+      background: #0F172A;
+      color: #94A3B8;
+      font-family: monospace;
+      font-size: 0.68rem;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .log-line { display: flex; gap: 6px; line-height: 1.3; }
+    .log-time { color: #64748B; }
+    .log-tag-INFO { color: #38BDF8; }
+    .log-tag-ALARM { color: #F87171; font-weight: 700; }
+    .log-tag-STEP { color: #4ADE80; }
+    .log-tag-SAFE { color: #FCD34D; }
+
+    /* ==========================================================================
+       ZONA C: DIAGRAMA LADDER EN TIEMPO REAL (IEC 61131-3) CON 22 RENGLONES
+       ========================================================================== */
+    .ladder-container {
+      background: #FAFAFA;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      max-height: 860px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .ladder-network {
+      background: var(--surface);
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      position: relative;
+    }
+
+    .ladder-net-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #E2E8F0;
+      padding-bottom: 3px;
+    }
+
+    .ladder-rung {
+      display: flex;
+      align-items: center;
+      position: relative;
+      height: 54px;
+      padding: 0 35px;
+      overflow-x: auto;
+    }
+
+    .rail-left {
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #94A3B8;
+      border-radius: 2px;
+    }
+    .rail-left.hot {
+      background: #22C55E;
+      box-shadow: 0 0 6px #22C55E;
+    }
+
+    .rail-right {
+      position: absolute;
+      right: 8px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #94A3B8;
+      border-radius: 2px;
+    }
+
+    .rail-label-left {
+      position: absolute;
+      left: 14px;
+      top: 2px;
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #64748B;
+    }
+    .rail-label-right {
+      position: absolute;
+      right: 14px;
+      top: 2px;
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #64748B;
+    }
+
+    .rung-wire {
+      flex: 1;
+      height: 2px;
+      background: #94A3B8;
+      transition: background 0.15s ease;
+      min-width: 10px;
+    }
+    .rung-wire.active {
+      background: #22C55E;
+      box-shadow: 0 0 4px #22C55E;
+    }
+
+    .ladder-contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+      padding: 0 3px;
+    }
+
+    .contact-symbol {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #64748B;
+      line-height: 1;
+      letter-spacing: -2px;
+      transition: color 0.15s;
+    }
+    .ladder-contact.active .contact-symbol {
+      color: #16A34A;
+      text-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    }
+
+    .contact-tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-top: 1px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .contact-addr {
+      font-size: 0.55rem;
+      color: #64748B;
+      font-family: monospace;
+    }
+
+    .ladder-coil {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 3px;
+    }
+
+    .coil-symbol {
+      font-family: monospace;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #64748B;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .ladder-coil.active .coil-symbol {
+      color: #0284C7;
+      text-shadow: 0 0 8px rgba(2, 132, 199, 0.7);
+    }
+    .ladder-coil.active.coil-danger .coil-symbol {
+      color: #DC2626;
+      text-shadow: 0 0 8px rgba(220, 38, 38, 0.7);
+    }
+
+    .ladder-ton-box {
+      border: 2px solid #94A3B8;
+      border-radius: 4px;
+      background: #F1F5F9;
+      padding: 3px 6px;
+      min-width: 100px;
+      font-size: 0.62rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .ladder-ton-box.active {
+      border-color: #0284C7;
+      background: #E0F2FE;
+    }
+    .ladder-ton-box.done {
+      border-color: #16A34A;
+      background: #DCFCE7;
+    }
+
+    .ton-header {
+      font-weight: 800;
+      color: var(--navy-dark);
+      text-align: center;
+      border-bottom: 1px solid #CBD5E1;
+      padding-bottom: 1px;
+    }
+
+    .ton-row {
+      display: flex;
+      justify-content: space-between;
+      color: #475569;
+    }
+    .ton-val {
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--text-main);
+    }
+
+    /* PESTAÑA 2: COMPUERTAS LÓGICAS */
+    .logic-gates-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 20px;
+    }
+    @media (max-width: 1150px) {
+      .logic-gates-layout { grid-template-columns: 1fr; }
+    }
+
+    .svg-schematic-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .interactive-gate-hint {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #166534;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .boolean-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .math-card {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .math-card h3 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 6px;
+    }
+
+    .formula-item {
+      background: #F8FAFC;
+      border-left: 4px solid var(--accent-blue);
+      padding: 8px 12px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 10px;
+    }
+
+    .formula-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--navy-dark);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .formula-expr {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #0369A1;
+    }
+
+    .formula-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* PESTAÑA 3 & 4: DOCUMENTACIÓN ACADÉMICA Y PROTEUS */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .doc-section {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-section h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .doc-section h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin: 16px 0 8px 0;
+    }
+
+    .doc-section p, .doc-section li {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .doc-section ul, .doc-section ol {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+
+    .doc-section li { margin-bottom: 6px; }
+
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 14px 0;
+      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .tech-table th {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .tech-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border-color);
+      background: #FFFFFF;
+    }
+
+    .tech-table tr:nth-child(even) td { background: #F8FAFC; }
+    .tech-table tr:hover td { background: #F1F5F9; }
+
+    .badge-code {
+      font-family: monospace;
+      font-weight: 700;
+      background: #E2E8F0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0F172A;
+    }
+
+    .code-block {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 14px 0;
+      border: 1px solid #334155;
+    }
+    .code-block .com { color: #64748B; }
+    .code-block .kwd { color: #38BDF8; font-weight: 700; }
+    .code-block .val { color: #FCD34D; }
+
+    footer.app-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       BARRA SUPERIOR CON ESTADO PLC EN VIVO Y PESTAÑAS
+       ========================================================================== -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="brand-title">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>SanitiGate PLC — Esclusa Sanitaria Automatizada</h1>
+          <p>Control de Acceso a Quirófanos e Industria Alimentaria | Validación EPP (Cofia + Cubrebocas) & Lavado de Manos</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div id="plcBadge" class="plc-badge run">
+          <span class="dot-indicator"></span>
+          <span id="plcStatusText">PLC: MODO RUN (50ms)</span>
+        </div>
+
+        <div style="display: flex; gap: 4px; align-items: center; background: #F1F5F9; padding: 3px; border-radius: 6px; border: 1px solid var(--border-color);">
+          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); padding: 0 6px;">VEL:</span>
+          <button id="speed1x" class="control-btn active" onclick="setSpeed(1)">1x Real</button>
+          <button id="speed3x" class="control-btn" onclick="setSpeed(3)">3x Exposición</button>
+          <button id="speed5x" class="control-btn" onclick="setSpeed(5)">5x Rápido</button>
+        </div>
+
+        <button id="audioToggleBtn" class="control-btn" onclick="toggleAudio()">
+          <span id="audioIcon">🔊</span> <span id="audioText">Audio Activo</span>
+        </button>
+
+        <button id="demoBtn" class="control-btn btn-demo" onclick="toggleDemoMode()">
+          <span>▶</span> <span id="demoBtnText">Demo Automática</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navegación por Pestañas -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab(0)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        1. Simulador en Vivo (Esclusa + HMI + Ladder)
+      </button>
+      <button class="tab-btn" onclick="switchTab(1)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="12" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 12h-4a2 2 0 0 1-2-2V8"/><path d="M12 16v-2a2 2 0 0 1 2-2h4"/></svg>
+        2. Diagrama de Compuertas Lógicas
+      </button>
+      <button class="tab-btn" onclick="switchTab(2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        3. Explicación y Contextualización Profunda
+      </button>
+      <button class="tab-btn" onclick="switchTab(3)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        4. Manual y Guía de Migración Proteus
+      </button>
+    </nav>
+  </header>
+
+  <main class="app-content">
+
+    <!-- Alerta Flotante de Infracción Sanitaria -->
+    <div id="abandonAlert" class="alert-banner">
+      <div class="alert-left">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <span id="abandonAlertTitle" style="font-size: 0.95rem; font-weight: 800;">¡INFRACCIÓN DE BIOSEGURIDAD DETECTADA!</span>
+          <p id="abandonAlertDetails" style="font-size: 0.8rem; font-weight: 500; margin-top: 2px;">El PLC ha abortado la secuencia o bloqueado el avance. La cerradura electromagnética permanece BLOQUEADA (Q0.4=1).</p>
+        </div>
+      </div>
+      <button class="control-btn" style="background:#FFF; color:#991B1B; border-color:#FCA5A5;" onclick="dismissAlert()">Aceptar</button>
+    </div>
+"""
+
+HTML_PART_3 = """
+    <!-- ==========================================================================
+         PESTAÑA 1: SIMULADOR INTERACTIVO EN VIVO
+         ========================================================================== -->
+    <section id="panel0" class="tab-panel active">
+
+      <!-- 1. SELECTOR DE MODO DE VISUALIZACIÓN / SUBSISTEMAS MODULARES -->
+      <div class="subsystem-bar-wrap">
+        <div class="subsystem-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          Selector de Subsistemas:
+        </div>
+        <div class="subsystem-nav">
+          <button id="btnSub1" class="btn-subsystem" onclick="setSubsystemMode(1)">
+            <span>Modo 1: Verificación de Cofia</span>
+            <span class="subsystem-badge-tag">Sensor I0.4</span>
+          </button>
+          <button id="btnSub2" class="btn-subsystem" onclick="setSubsystemMode(2)">
+            <span>Modo 2: Verificación de Cubrebocas</span>
+            <span class="subsystem-badge-tag">Sensor I0.5</span>
+          </button>
+          <button id="btnSub3" class="btn-subsystem" onclick="setSubsystemMode(3)">
+            <span>Modo 3: Higiene de Manos</span>
+            <span class="subsystem-badge-tag">5 Etapas (46s)</span>
+          </button>
+          <button id="btnSub4" class="btn-subsystem active" onclick="setSubsystemMode(4)">
+            <span>Modo 4: Sistema Integrado Completo</span>
+            <span class="subsystem-badge-tag">Esclusa Total</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+
+        <!-- COLUMNA 1: VISTA FÍSICA 2D DE LA ESTACIÓN (ESCLUSA SANITARIA + EPP) -->
+        <div class="card">
+          <div class="card-header">
+            <h2 id="viewportCardTitle">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Estación Física & EPP
+            </h2>
+            <span id="viewportSubBadge" class="badge-sub">Modo 4: Total</span>
+          </div>
+
+          <div id="stationViewport" class="station-viewport">
+            <!-- Fondo Área Limpia / Quirófano -->
+            <div class="cleanroom-bg">
+              <span>QUIRÓFANO / SALA BLANCA</span>
+              <span>ÁREA ASÉPTICA ISO 5 / HACCP</span>
+              <div class="cleanroom-tag-icon">🏥</div>
+            </div>
+
+            <!-- ESCÁNER 1: VISIÓN ARTIFICIAL CABEZA / COFIA (I0.4) -->
+            <div class="scanner-hair-housing" title="Cámara de Visión Artificial Superior (I0.4)">
+              <div id="hairLens" class="scanner-lens"></div>
+              <span class="scanner-label">CAM I0.4</span>
+            </div>
+            <div id="hairBeam" class="scanner-hair-beam active"></div>
+
+            <!-- ESCÁNER 2: RECONOCIMIENTO FACIAL / CUBREBOCAS (I0.5) -->
+            <div id="faceHousing" class="scanner-face-housing" title="Sensor Facial Infrarrojo (I0.5)">
+              <div style="font-size: 0.6rem; color: #FFF; font-weight: 800;">I0.5</div>
+            </div>
+            <div id="faceBeam" class="scanner-face-beam active">
+              <span id="faceBeamText">MASCARILLA OK</span>
+            </div>
+
+            <!-- Baliza Tricolor Industrial -->
+            <div class="stack-light" title="Baliza Tricolor IP65">
+              <div id="lampRed" class="stack-lamp lamp-red active" title="Q0.4: Puerta Bloqueada / Espera"></div>
+              <div id="lampYellow" class="stack-lamp lamp-yellow" title="Q0.5: Frotado en Proceso (20s)"></div>
+              <div id="lampGreen" class="stack-lamp lamp-green" title="Q0.3: Acceso Autorizado (10s)"></div>
+            </div>
+
+            <!-- Módulo de Lavamanos de Acero Inoxidable -->
+            <div class="sink-station">
+              <span class="sink-panel-tag">LAVAMANOS AUTOMATIZADO INOX AISI-304</span>
+
+              <div class="dispensers-row">
+                <!-- Jabón Q0.0 -->
+                <div class="dispenser-head">
+                  <div class="dispenser-nozzle" style="background:#0284C7;"></div>
+                  <span class="dispenser-tag">JABÓN</span>
+                  <div id="soapFlow" class="fluid-stream soap-stream">
+                    <div class="soap-drop"></div>
+                    <div class="soap-drop"></div>
+                  </div>
+                </div>
+
+                <!-- Agua Q0.1 -->
+                <div class="dispenser-head">
+                  <div class="dispenser-nozzle" style="background:#475569; width: 18px; height: 24px;"></div>
+                  <span class="dispenser-tag">AGUA</span>
+                  <div id="waterFlow" class="fluid-stream water-stream">
+                    <div class="water-jet"></div>
+                  </div>
+                </div>
+
+                <!-- Desinfectante Q0.2 -->
+                <div class="dispenser-head">
+                  <div class="dispenser-nozzle" style="background:#14B8A6;"></div>
+                  <span class="dispenser-tag">SPRAY</span>
+                  <div id="sprayFlow" class="fluid-stream spray-stream">
+                    <div class="mist-cloud"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Haz Sensor Infrarrojo de Manos (I0.1) -->
+              <div id="irBeam" class="ir-sensor-beam">
+                <span>SENSOR ÓPTICO I0.1</span>
+              </div>
+
+              <!-- Manos del Operario bajo el grifo -->
+              <div id="avatarHands" class="avatar-hands">
+                <span class="hand-icon">👐</span>
+              </div>
+
+              <!-- Bacha Inox -->
+              <div class="sink-basin">
+                <div class="basin-drain"></div>
+              </div>
+            </div>
+
+            <!-- Puerta / Esclusa con Cerradura Electromagnética (Q0.3) -->
+            <div class="door-frame">
+              <div class="mag-lock" title="Cerradura Electromagnética 600lbs">
+                <div id="magLockLed" class="mag-lock-led"></div>
+              </div>
+              <div id="doorWing" class="door-wing">
+                <div class="door-handle"></div>
+                <div id="doorStatusText" class="door-status-text">BLOQUEADO<br>ACCESO DENEGADO</div>
+              </div>
+            </div>
+
+            <!-- Alfombra Sanitaria con Sensor de Presencia (I0.0) -->
+            <div id="sanitaryMat" class="sanitary-mat">
+              <span id="matLabel" class="mat-inner">SENSOR I0.0</span>
+            </div>
+
+            <!-- Operario Avatar con EPP Dinámico -->
+            <div id="operatorAvatar" class="operator-avatar">
+              <div class="avatar-head">
+                <!-- Cabello Expuesto -->
+                <div id="avatarHairExposed" class="avatar-hair-exposed"></div>
+                <!-- Cofia / Gorro Quirúrgico -->
+                <div id="avatarHairnet" class="avatar-hairnet visible"></div>
+
+                <!-- Rasgos Faciales y Mascarilla -->
+                <div class="avatar-face-features">
+                  <div class="avatar-eyes">
+                    <div class="avatar-eye"></div>
+                    <div class="avatar-eye"></div>
+                  </div>
+                  <div class="avatar-mouth"></div>
+                </div>
+                <!-- Mascarilla / Cubrebocas -->
+                <div id="avatarMask" class="avatar-mask visible"></div>
+              </div>
+              <div class="avatar-body">
+                <span class="avatar-badge">PERSONAL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Controles Humanos / Sensores Físicos -->
+          <div class="human-controls">
+            <div class="controls-title">Controles de Operario & Sensores Digitales</div>
+            
+            <div class="toggle-row-grid">
+              <button id="btnToggleHair" class="btn-toggle-input active" onclick="toggleHairnet()">
+                <span>Cofia Colocada (I0.4)</span>
+                <span id="badgeI04" class="badge-io-state">OK (1)</span>
+              </button>
+
+              <button id="btnToggleMask" class="btn-toggle-input active" onclick="toggleMask()">
+                <span>Cubrebocas Puesto (I0.5)</span>
+                <span id="badgeI05" class="badge-io-state">OK (1)</span>
+              </button>
+            </div>
+
+            <div class="toggle-row-grid">
+              <button id="btnTogglePresence" class="btn-toggle-input" onclick="togglePresence()">
+                <span>Presencia en Esclusa (I0.0)</span>
+                <span id="badgeI00" class="badge-io-state">OFF (0)</span>
+              </button>
+
+              <button id="btnToggleHands" class="btn-toggle-input" onclick="toggleHands()">
+                <span>Manos bajo Grifo (I0.1)</span>
+                <span id="badgeI01" class="badge-io-state">OFF (0)</span>
+              </button>
+            </div>
+
+            <div class="fault-btns-row">
+              <button class="btn-fault-trigger" onclick="simulateEarlyWithdrawal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Retirar Manos (Falla Lavado)
+              </button>
+
+              <button class="btn-fault-trigger" onclick="simulateEppRemoval()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Quitar EPP (Falla Cofia/Mask)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA 2: TABLERO HMI Y MONITOR I/O DEL PLC -->
+        <div class="card">
+          <div class="card-header">
+            <h2>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Tablero HMI & Monitor I/O
+            </h2>
+            <span class="badge-sub">Panel de Control</span>
+          </div>
+
+          <!-- Pantalla Digital HMI -->
+          <div class="hmi-display">
+            <div class="stage-indicator-top">
+              <span id="hmiStepNumber">ETAPA 0 / 5</span>
+              <span id="hmiProtocol">PROTOCOLO QUIRÓFANO / HACCP</span>
+            </div>
+
+            <div id="hmiStageName" class="stage-name-box">
+              <span>ESPERANDO OPERARIO EN ESCLUSA...</span>
+            </div>
+
+            <!-- EPP Status Pills -->
+            <div class="epp-status-bar">
+              <div id="eppHairPill" class="epp-badge-pill valid">
+                <span>Cofia (I0.4):</span>
+                <strong id="eppHairText">VALIDADA</strong>
+              </div>
+              <div id="eppMaskPill" class="epp-badge-pill valid">
+                <span>Cubrebocas (I0.5):</span>
+                <strong id="eppMaskText">VALIDADO</strong>
+              </div>
+            </div>
+
+            <!-- Reloj Circular y Cuenta Regresiva de la Etapa -->
+            <div class="timer-center-box">
+              <div class="countdown-circle">
+                <svg>
+                  <circle class="circle-bg" cx="45" cy="45" r="38"></circle>
+                  <circle id="circleProgress" class="circle-progress" cx="45" cy="45" r="38"></circle>
+                </svg>
+                <div id="stageSeconds" class="timer-text-inner">0s</div>
+              </div>
+
+              <div class="timer-meta-box">
+                <div class="meta-row">
+                  <span>Tiempo Etapa (PT):</span>
+                  <span id="hmiPT" class="meta-val">0.0 s</span>
+                </div>
+                <div class="meta-row">
+                  <span>Transcurrido (ET):</span>
+                  <span id="hmiET" class="meta-val">0.0 s</span>
+                </div>
+                <div class="meta-row">
+                  <span>Cerradura Q0.3:</span>
+                  <span id="hmiLockStatus" class="meta-val" style="color:#EF4444;">ENERGIZADA (BLOQ)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Barra de Progreso Global del Ciclo -->
+            <div class="global-bar-wrap">
+              <div class="global-bar-label">
+                <span>Ciclo Total Higienización:</span>
+                <span id="globalProgressText">0 / 46 s</span>
+              </div>
+              <div class="progress-bar-track">
+                <div id="globalProgressBar" class="progress-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contador Digital CTU C1 -->
+          <div class="counter-display-card">
+            <div class="counter-left">
+              <h3>Personal con EPP y Lavado Validado</h3>
+              <p>Contador Auditoría CTU C1 (Quirófano / Sala Limpia)</p>
+            </div>
+            <div id="counterVal" class="counter-digits">0042</div>
+          </div>
+
+          <!-- Botonera Industrial de Operación -->
+          <div class="industrial-controls">
+            <button id="btnEstop" class="btn-estop" onclick="toggleEmergencyStop()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span id="estopText">PARO DE EMERGENCIA (I0.3)</span>
+            </button>
+
+            <button class="btn-stop" onclick="pressStop()">
+              ⏹ STOP NORMAL (I0.2)
+            </button>
+
+            <button class="btn-reset-cnt" onclick="resetCounter()">
+              ↺ RESET CONTADOR
+            </button>
+          </div>
+
+          <!-- Monitor I/O del PLC (LEDs 24V DC con 6 Entradas y 6 Salidas) -->
+          <div class="io-rack">
+            <div class="io-header-tab">Borneo Digital PLC (24V DC Industrial)</div>
+            <div class="io-led-grid">
+              <!-- Entradas Digitales I0.0 a I0.5 -->
+              <div class="io-led-item">
+                <div id="ledI00" class="plc-led"></div>
+                <span>I0.0: Presencia Operario</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledI01" class="plc-led"></div>
+                <span>I0.1: Sensor Óptico Manos</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledI02" class="plc-led"></div>
+                <span>I0.2: Pulsador Paro</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledI03" class="plc-led"></div>
+                <span>I0.3: Paro de Emergencia</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledI04" class="plc-led active-in"></div>
+                <span>I0.4: Sensor Cofia (Visión)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledI05" class="plc-led active-in"></div>
+                <span>I0.5: Sensor Cubrebocas</span>
+              </div>
+              
+              <!-- Salidas Digitales Q0.0 a Q0.5 -->
+              <div class="io-led-item">
+                <div id="ledQ00" class="plc-led"></div>
+                <span>Q0.0: Electroválvula Jabón (3s)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledQ05" class="plc-led"></div>
+                <span>Q0.5: Baliza Amarilla Frotado (20s)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledQ01" class="plc-led"></div>
+                <span>Q0.1: Electroválvula Agua (10s)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledQ02" class="plc-led"></div>
+                <span>Q0.2: Atomizador Desinfectante (3s)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledQ03" class="plc-led"></div>
+                <span>Q0.3: Cerradura + Baliza Verde (10s)</span>
+              </div>
+              <div class="io-led-item">
+                <div id="ledQ04" class="plc-led active-red"></div>
+                <span>Q0.4: Baliza Roja (Bloqueado)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registro SCADA -->
+          <div class="scada-log-wrap">
+            <div class="scada-log-header">
+              <span>Registro SCADA en Tiempo Real</span>
+              <button style="border:none; background:transparent; color:#64748B; cursor:pointer; font-size:0.65rem;" onclick="clearLog()">Limpiar</button>
+            </div>
+            <div id="scadaLog" class="scada-log-body">
+              <div class="log-line"><span class="log-time">[00:00:00.000]</span> <span class="log-tag-INFO">[INIT]</span> SanitiGate PLC v3.0 iniciado en Modo RUN. Validación EPP activa.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA 3: DIAGRAMA LADDER EN TIEMPO REAL (IEC 61131-3) -->
+        <div class="card col-ladder">
+          <div class="card-header">
+            <h2>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="3"/><line x1="20" y1="21" x2="20" y2="3"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+              Lógica Ladder en Tiempo Real (IEC 61131-3)
+            </h2>
+            <span class="badge-sub">22 Renglones Activos</span>
+          </div>
+
+          <div class="ladder-container">
+
+            <!-- NETWORK 1: Seguridad -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 1: Interbloqueo de Seguridad (Emergencia y Stop)</span>
+                <span>M_RUN</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <span class="rail-label-left">L+ (24V)</span>
+                <div class="rung-wire" id="w_1_1"></div>
+                <div class="ladder-contact active" id="c_not_I03">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">Emergencia</span>
+                  <span class="contact-addr">I0.3</span>
+                </div>
+                <div class="rung-wire" id="w_1_2"></div>
+                <div class="ladder-contact active" id="c_not_I02">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">Paro Normal</span>
+                  <span class="contact-addr">I0.2</span>
+                </div>
+                <div class="rung-wire" id="w_1_3"></div>
+                <div class="ladder-coil active" id="coil_MRUN">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Seguridad OK</span>
+                  <span class="contact-addr">M_RUN</span>
+                </div>
+                <div class="rung-wire" id="w_1_4"></div>
+                <div class="rail-right"></div>
+                <span class="rail-label-right">M (0V)</span>
+              </div>
+            </div>
+
+            <!-- NETWORK 2: Validación EPP (Cofia + Cubrebocas) -->
+            <div class="ladder-network" style="border-left: 4px solid var(--epp-scanner);">
+              <div class="ladder-net-title">
+                <span>Network 2: Validación EPP Obligatoria (Cofia I0.4 AND Cubrebocas I0.5)</span>
+                <span>M_EPP_OK</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_2_1"></div>
+                <div class="ladder-contact active" id="c_I04_epp">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Sensor Cofia</span>
+                  <span class="contact-addr">I0.4</span>
+                </div>
+                <div class="rung-wire" id="w_2_2"></div>
+                <div class="ladder-contact active" id="c_I05_epp">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Sensor Cubrebocas</span>
+                  <span class="contact-addr">I0.5</span>
+                </div>
+                <div class="rung-wire" id="w_2_3"></div>
+                <div class="ladder-coil active" id="coil_MEPP">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">EPP Conforme</span>
+                  <span class="contact-addr">M_EPP_OK</span>
+                </div>
+                <div class="rung-wire" id="w_2_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 3: Arranque de Ciclo -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 3: Permisivo de Inicio (Seguridad + EPP + Presencia + Manos)</span>
+                <span>Set M0.0</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_3_1"></div>
+                <div class="ladder-contact" id="c_MRUN_start">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Seguridad</span>
+                  <span class="contact-addr">M_RUN</span>
+                </div>
+                <div class="rung-wire" id="w_3_2"></div>
+                <div class="ladder-contact" id="c_MEPP_start">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">EPP OK</span>
+                  <span class="contact-addr">M_EPP_OK</span>
+                </div>
+                <div class="rung-wire" id="w_3_3"></div>
+                <div class="ladder-contact" id="c_I00_start">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Presencia</span>
+                  <span class="contact-addr">I0.0</span>
+                </div>
+                <div class="rung-wire" id="w_3_4"></div>
+                <div class="ladder-contact" id="c_I01_start">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Manos</span>
+                  <span class="contact-addr">I0.1</span>
+                </div>
+                <div class="rung-wire" id="w_3_5"></div>
+                <div class="ladder-contact active" id="c_not_M05_start">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">No Autoriz</span>
+                  <span class="contact-addr">M0.5</span>
+                </div>
+                <div class="rung-wire" id="w_3_6"></div>
+                <div class="ladder-coil" id="coil_M00">
+                  <span class="coil-symbol">(S)</span>
+                  <span class="contact-tag">Ciclo Iniciado</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_3_7"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 4: Baliza Roja -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 4: Baliza Roja — Esclusa Bloqueada por Defecto</span>
+                <span>Q0.4</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire active" id="w_4_1"></div>
+                <div class="ladder-contact active" id="c_not_Q03">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">No Autorizado</span>
+                  <span class="contact-addr">Q0.3</span>
+                </div>
+                <div class="rung-wire active" id="w_4_2"></div>
+                <div class="ladder-coil active coil-danger" id="coil_Q04">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Baliza Roja</span>
+                  <span class="contact-addr">Q0.4</span>
+                </div>
+                <div class="rung-wire active" id="w_4_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 5-6: Jabón -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 5: Etapa 1 — Electroválvula de Jabón Líquido</span>
+                <span>Q0.0 (PT=3.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_5_1"></div>
+                <div class="ladder-contact" id="c_M00_step1">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Ciclo Activo</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_5_2"></div>
+                <div class="ladder-contact active" id="c_not_T1DN">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">T1 No Cumplido</span>
+                  <span class="contact-addr">T1.DN</span>
+                </div>
+                <div class="rung-wire" id="w_5_3"></div>
+                <div class="ladder-coil" id="coil_Q00">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Electrov. Jabón</span>
+                  <span class="contact-addr">Q0.0</span>
+                </div>
+                <div class="rung-wire" id="w_5_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 6: Temporizador TON T1 — Temporización de Jabón</span>
+                <span>TON T1 (3.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_6_1"></div>
+                <div class="ladder-contact" id="c_M00_T1">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Ciclo Activo</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_6_2"></div>
+                <div class="ladder-ton-box" id="ton_T1">
+                  <div class="ton-header">TON T1</div>
+                  <div class="ton-row"><span>PT:</span><span class="ton-val">3.0 s</span></div>
+                  <div class="ton-row"><span>ET:</span><span id="t1_et" class="ton-val">0.0 s</span></div>
+                  <div class="ton-row"><span>DN:</span><span id="t1_dn" class="ton-val">0</span></div>
+                </div>
+                <div class="rung-wire" id="w_6_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 7-8: Frotado -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 7: Etapa 2 — Frotado Mecánico & Baliza Amarilla</span>
+                <span>Q0.5 (PT=20.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_7_1"></div>
+                <div class="ladder-contact" id="c_T1DN_step2">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Jabón Listo</span>
+                  <span class="contact-addr">T1.DN</span>
+                </div>
+                <div class="rung-wire" id="w_7_2"></div>
+                <div class="ladder-contact active" id="c_not_T2DN">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">T2 No Cumplido</span>
+                  <span class="contact-addr">T2.DN</span>
+                </div>
+                <div class="rung-wire" id="w_7_3"></div>
+                <div class="ladder-coil" id="coil_Q05">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Baliza Amarilla</span>
+                  <span class="contact-addr">Q0.5</span>
+                </div>
+                <div class="rung-wire" id="w_7_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 8: Temporizador TON T2 — Frotado Obligatorio</span>
+                <span>TON T2 (20.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_8_1"></div>
+                <div class="ladder-contact" id="c_T1DN_T2">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Habilitar Frotado</span>
+                  <span class="contact-addr">T1.DN</span>
+                </div>
+                <div class="rung-wire" id="w_8_2"></div>
+                <div class="ladder-ton-box" id="ton_T2">
+                  <div class="ton-header">TON T2</div>
+                  <div class="ton-row"><span>PT:</span><span class="ton-val">20.0 s</span></div>
+                  <div class="ton-row"><span>ET:</span><span id="t2_et" class="ton-val">0.0 s</span></div>
+                  <div class="ton-row"><span>DN:</span><span id="t2_dn" class="ton-val">0</span></div>
+                </div>
+                <div class="rung-wire" id="w_8_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 9-10: Agua -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 9: Etapa 3 — Electroválvula de Enjuague con Agua</span>
+                <span>Q0.1 (PT=10.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_9_1"></div>
+                <div class="ladder-contact" id="c_T2DN_step3">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Frotado OK</span>
+                  <span class="contact-addr">T2.DN</span>
+                </div>
+                <div class="rung-wire" id="w_9_2"></div>
+                <div class="ladder-contact active" id="c_not_T3DN">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">T3 No Cumplido</span>
+                  <span class="contact-addr">T3.DN</span>
+                </div>
+                <div class="rung-wire" id="w_9_3"></div>
+                <div class="ladder-coil" id="coil_Q01">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Electrov. Agua</span>
+                  <span class="contact-addr">Q0.1</span>
+                </div>
+                <div class="rung-wire" id="w_9_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 10: Temporizador TON T3 — Tiempo de Enjuague</span>
+                <span>TON T3 (10.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_10_1"></div>
+                <div class="ladder-contact" id="c_T2DN_T3">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Habilitar Agua</span>
+                  <span class="contact-addr">T2.DN</span>
+                </div>
+                <div class="rung-wire" id="w_10_2"></div>
+                <div class="ladder-ton-box" id="ton_T3">
+                  <div class="ton-header">TON T3</div>
+                  <div class="ton-row"><span>PT:</span><span class="ton-val">10.0 s</span></div>
+                  <div class="ton-row"><span>ET:</span><span id="t3_et" class="ton-val">0.0 s</span></div>
+                  <div class="ton-row"><span>DN:</span><span id="t3_dn" class="ton-val">0</span></div>
+                </div>
+                <div class="rung-wire" id="w_10_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 11-12: Spray -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 11: Etapa 4 — Atomizador Desinfectante Hidroalcohólico</span>
+                <span>Q0.2 (PT=3.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_11_1"></div>
+                <div class="ladder-contact" id="c_T3DN_step4">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Enjuague OK</span>
+                  <span class="contact-addr">T3.DN</span>
+                </div>
+                <div class="rung-wire" id="w_11_2"></div>
+                <div class="ladder-contact active" id="c_not_T4DN">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">T4 No Cumplido</span>
+                  <span class="contact-addr">T4.DN</span>
+                </div>
+                <div class="rung-wire" id="w_11_3"></div>
+                <div class="ladder-coil" id="coil_Q02">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Atomizador Spray</span>
+                  <span class="contact-addr">Q0.2</span>
+                </div>
+                <div class="rung-wire" id="w_11_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 12: Temporizador TON T4 — Dosificación de Spray</span>
+                <span>TON T4 (3.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_12_1"></div>
+                <div class="ladder-contact" id="c_T3DN_T4">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Habilitar Spray</span>
+                  <span class="contact-addr">T3.DN</span>
+                </div>
+                <div class="rung-wire" id="w_12_2"></div>
+                <div class="ladder-ton-box" id="ton_T4">
+                  <div class="ton-header">TON T4</div>
+                  <div class="ton-row"><span>PT:</span><span class="ton-val">3.0 s</span></div>
+                  <div class="ton-row"><span>ET:</span><span id="t4_et" class="ton-val">0.0 s</span></div>
+                  <div class="ton-row"><span>DN:</span><span id="t4_dn" class="ton-val">0</span></div>
+                </div>
+                <div class="rung-wire" id="w_12_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 13: Fin Lavado Manos -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 13: Fin del Protocolo de Manos (Flanco Ascendente T4.DN)</span>
+                <span>Set M0.5</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_13_1"></div>
+                <div class="ladder-contact" id="c_T4DN_step5">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Desinfección OK</span>
+                  <span class="contact-addr">T4.DN</span>
+                </div>
+                <div class="rung-wire" id="w_13_2"></div>
+                <div class="ladder-coil" id="coil_M05">
+                  <span class="coil-symbol">(S)</span>
+                  <span class="contact-tag">Lavado Validado</span>
+                  <span class="contact-addr">M0.5</span>
+                </div>
+                <div class="rung-wire" id="w_13_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 14: Permisivo Final de Apertura (Lavado + Cofia + Cubrebocas) -->
+            <div class="ladder-network" style="border-left: 4px solid #16A34A;">
+              <div class="ladder-net-title">
+                <span>Network 14: Permisivo de Acceso Total (Lavado M0.5 AND Cofia I0.4 AND Cubrebocas I0.5)</span>
+                <span>M_ACCESS_GRANT</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_14_1"></div>
+                <div class="ladder-contact" id="c_M05_final">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Lavado Manos</span>
+                  <span class="contact-addr">M0.5</span>
+                </div>
+                <div class="rung-wire" id="w_14_2"></div>
+                <div class="ladder-contact active" id="c_I04_final">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Cofia OK</span>
+                  <span class="contact-addr">I0.4</span>
+                </div>
+                <div class="rung-wire" id="w_14_3"></div>
+                <div class="ladder-contact active" id="c_I05_final">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Cubrebocas OK</span>
+                  <span class="contact-addr">I0.5</span>
+                </div>
+                <div class="rung-wire" id="w_14_4"></div>
+                <div class="ladder-coil" id="coil_M_GRANT">
+                  <span class="coil-symbol">(S)</span>
+                  <span class="contact-tag">Paso Autorizado</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_14_5"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 15: TON T5 Puerta -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 15: Temporizador TON T5 — Ventana de Paso por Esclusa</span>
+                <span>TON T5 (10.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_15_1"></div>
+                <div class="ladder-contact" id="c_MGRANT_T5">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Paso Autorizado</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_15_2"></div>
+                <div class="ladder-ton-box" id="ton_T5">
+                  <div class="ton-header">TON T5</div>
+                  <div class="ton-row"><span>PT:</span><span class="ton-val">10.0 s</span></div>
+                  <div class="ton-row"><span>ET:</span><span id="t5_et" class="ton-val">0.0 s</span></div>
+                  <div class="ton-row"><span>DN:</span><span id="t5_dn" class="ton-val">0</span></div>
+                </div>
+                <div class="rung-wire" id="w_15_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 16: Salida Q0.3 Cerradura + Luz Verde -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 16: Desbloqueo Cerradura Magnética y Baliza Verde</span>
+                <span>Q0.3 (10.0s)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_16_1"></div>
+                <div class="ladder-contact" id="c_MGRANT_Q03">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Autorización</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_16_2"></div>
+                <div class="ladder-contact active" id="c_not_T5DN">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">T5 No Cumplido</span>
+                  <span class="contact-addr">T5.DN</span>
+                </div>
+                <div class="rung-wire" id="w_16_3"></div>
+                <div class="ladder-coil" id="coil_Q03">
+                  <span class="coil-symbol">( )</span>
+                  <span class="contact-tag">Cerradura + Verde</span>
+                  <span class="contact-addr">Q0.3</span>
+                </div>
+                <div class="rung-wire" id="w_16_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 17: Contador CTU C1 -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 17: Contador CTU C1 — Personal Validado con EPP y Lavado</span>
+                <span>CTU C1 (+1)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_17_1"></div>
+                <div class="ladder-contact" id="c_MGRANT_C1">
+                  <span class="contact-symbol">|P|</span>
+                  <span class="contact-tag">Flanco M_ACCESS</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_17_2"></div>
+                <div class="ladder-ton-box" id="ctu_C1">
+                  <div class="ton-header">CTU C1</div>
+                  <div class="ton-row"><span>PV:</span><span class="ton-val">9999</span></div>
+                  <div class="ton-row"><span>CV:</span><span id="ladder_cv" class="ton-val">42</span></div>
+                  <div class="ton-row"><span>R:</span><span class="ton-val">Reset</span></div>
+                </div>
+                <div class="rung-wire" id="w_17_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 18: Auto-Reset -->
+            <div class="ladder-network">
+              <div class="ladder-net-title">
+                <span>Network 18: Fin de Ventana de Paso y Bloqueo Automático</span>
+                <span>Reset Total</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_18_1"></div>
+                <div class="ladder-contact" id="c_T5DN_reset">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Fin T5</span>
+                  <span class="contact-addr">T5.DN</span>
+                </div>
+                <div class="rung-wire" id="w_18_2"></div>
+                <div class="ladder-coil" id="coil_reset_MGRANT">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Reset Acceso</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_18_3"></div>
+                <div class="ladder-coil" id="coil_reset_M05">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Reset Lavado</span>
+                  <span class="contact-addr">M0.5</span>
+                </div>
+                <div class="rung-wire" id="w_18_4"></div>
+                <div class="ladder-coil" id="coil_reset_M00">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Reset Ciclo</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_18_5"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 19-20: Interbloqueo Anti-Violación EPP -->
+            <div class="ladder-network" style="border: 1px solid #FCA5A5; background: #FFF5F5;">
+              <div class="ladder-net-title" style="color: #991B1B;">
+                <span>Network 19: Detección de Retiro de Cofia o Cubrebocas en Esclusa</span>
+                <span>M0.8 (Falla EPP)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_19_1"></div>
+                <div class="ladder-contact" id="c_M00_epp_fault">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">En Esclusa</span>
+                  <span class="contact-addr">I0.0</span>
+                </div>
+                <div class="rung-wire" id="w_19_2"></div>
+                <div class="ladder-contact" id="c_not_MEPP_fault">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">Falta EPP</span>
+                  <span class="contact-addr">M_EPP_OK</span>
+                </div>
+                <div class="rung-wire" id="w_19_3"></div>
+                <div class="ladder-coil coil-danger" id="coil_M08">
+                  <span class="coil-symbol">(S)</span>
+                  <span class="contact-tag">Alarma EPP</span>
+                  <span class="contact-addr">M0.8</span>
+                </div>
+                <div class="rung-wire" id="w_19_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network" style="border: 1px solid #FCA5A5; background: #FFF5F5;">
+              <div class="ladder-net-title" style="color: #991B1B;">
+                <span>Network 20: Bloqueo Inmediato por Infracción de EPP</span>
+                <span>Abort M0.0 & M_ACCESS</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_20_1"></div>
+                <div class="ladder-contact" id="c_M08_abort">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Falla EPP</span>
+                  <span class="contact-addr">M0.8</span>
+                </div>
+                <div class="rung-wire" id="w_20_2"></div>
+                <div class="ladder-coil coil-danger" id="coil_abort_epp_m00">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Abort Ciclo</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_20_3"></div>
+                <div class="ladder-coil coil-danger" id="coil_abort_epp_grant">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Bloq Puerta</span>
+                  <span class="contact-addr">M_ACCESS</span>
+                </div>
+                <div class="rung-wire" id="w_20_4"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <!-- NETWORK 21-22: Protección Abandono Manos -->
+            <div class="ladder-network" style="border: 1px solid #FCA5A5; background: #FFF5F5;">
+              <div class="ladder-net-title" style="color: #991B1B;">
+                <span>Network 21: Detección de Retiro Prematuro de Manos bajo Grifo</span>
+                <span>M0.6 (Falla Manos)</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_21_1"></div>
+                <div class="ladder-contact" id="c_M00_hands_fault">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Ciclo Activo</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_21_2"></div>
+                <div class="ladder-contact active" id="c_not_M05_fault">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">No Validado</span>
+                  <span class="contact-addr">M0.5</span>
+                </div>
+                <div class="rung-wire" id="w_21_3"></div>
+                <div class="ladder-contact" id="c_not_I01_fault">
+                  <span class="contact-symbol">|/|</span>
+                  <span class="contact-tag">Manos Ausentes</span>
+                  <span class="contact-addr">I0.1</span>
+                </div>
+                <div class="rung-wire" id="w_21_4"></div>
+                <div class="ladder-coil coil-danger" id="coil_M06">
+                  <span class="coil-symbol">(S)</span>
+                  <span class="contact-tag">Alarma Manos</span>
+                  <span class="contact-addr">M0.6</span>
+                </div>
+                <div class="rung-wire" id="w_21_5"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+            <div class="ladder-network" style="border: 1px solid #FCA5A5; background: #FFF5F5;">
+              <div class="ladder-net-title" style="color: #991B1B;">
+                <span>Network 22: Reset a Cero por Retiro Prematuro de Manos</span>
+                <span>Abort M0.0</span>
+              </div>
+              <div class="ladder-rung">
+                <div class="rail-left hot"></div>
+                <div class="rung-wire" id="w_22_1"></div>
+                <div class="ladder-contact" id="c_M06_abort">
+                  <span class="contact-symbol">| |</span>
+                  <span class="contact-tag">Falla Manos</span>
+                  <span class="contact-addr">M0.6</span>
+                </div>
+                <div class="rung-wire" id="w_22_2"></div>
+                <div class="ladder-coil coil-danger" id="coil_abort_hands_m00">
+                  <span class="coil-symbol">(R)</span>
+                  <span class="contact-tag">Reset Ciclo a 0s</span>
+                  <span class="contact-addr">M0.0</span>
+                </div>
+                <div class="rung-wire" id="w_22_3"></div>
+                <div class="rail-right"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+"""
+
+HTML_PART_4 = """
+    <!-- ==========================================================================
+         PESTAÑA 2: DIAGRAMA DE COMPUERTAS LÓGICAS (ENTRADAS Y SALIDAS)
+         ========================================================================== -->
+    <section id="panel1" class="tab-panel">
+      <div class="interactive-gate-hint">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span><strong>Esquemático Lógico Digital Interactivo:</strong> Los niveles lógicos cambian en tiempo real (0 = Gris #94A3B8, 1 = Verde Esmeralda #16A34A). <strong>Haga clic directamente sobre los bloques de entrada I0.0 a I0.5</strong> para conmutar las señales booleanas y observar la compuerta AND de Validación EPP.</span>
+      </div>
+
+      <div class="logic-gates-layout">
+        <div class="svg-schematic-wrap">
+          <svg id="logicGatesSvg" viewBox="0 0 940 680" style="width: 100%; min-width: 820px; height: auto;">
+            <!-- ENTRADAS DIGITALES CLICKABLES -->
+            <g id="gateInputs" style="cursor: pointer;">
+              <!-- I0.0 -->
+              <rect id="nodeI00" x="20" y="30" width="90" height="32" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+              <text x="65" y="51" font-size="11" font-weight="700" fill="#0F172A" text-anchor="middle">I0.0 (Pres)</text>
+
+              <!-- I0.1 -->
+              <rect id="nodeI01" x="20" y="80" width="90" height="32" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+              <text x="65" y="101" font-size="11" font-weight="700" fill="#0F172A" text-anchor="middle">I0.1 (Manos)</text>
+
+              <!-- I0.4 (Cofia) -->
+              <rect id="nodeI04" x="20" y="130" width="90" height="32" rx="6" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+              <text x="65" y="151" font-size="11" font-weight="700" fill="#15803D" text-anchor="middle">I0.4 (Cofia)</text>
+
+              <!-- I0.5 (Cubrebocas) -->
+              <rect id="nodeI05" x="20" y="180" width="90" height="32" rx="6" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+              <text x="65" y="201" font-size="11" font-weight="700" fill="#15803D" text-anchor="middle">I0.5 (Mask)</text>
+
+              <!-- I0.2 (Stop) -->
+              <rect id="nodeI02" x="20" y="230" width="90" height="32" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+              <text x="65" y="251" font-size="11" font-weight="700" fill="#0F172A" text-anchor="middle">I0.2 (Stop)</text>
+
+              <!-- I0.3 (Emergencia) -->
+              <rect id="nodeI03" x="20" y="280" width="90" height="32" rx="6" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+              <text x="65" y="301" font-size="11" font-weight="700" fill="#0F172A" text-anchor="middle">I0.3 (Emerg)</text>
+            </g>
+
+            <!-- COMPUERTAS NOT (Stop y Emergencia) -->
+            <polygon points="140,236 165,246 140,256" fill="#FFF" stroke="#64748B" stroke-width="2"/>
+            <circle cx="168" cy="246" r="3" fill="#FFF" stroke="#64748B" stroke-width="2"/>
+
+            <polygon points="140,286 165,296 140,306" fill="#FFF" stroke="#64748B" stroke-width="2"/>
+            <circle cx="168" cy="296" r="3" fill="#FFF" stroke="#64748B" stroke-width="2"/>
+
+            <!-- COMPUERTA AND 1: VALIDACIÓN EPP (I0.4 AND I0.5) -->
+            <path d="M 170,140 L 195,140 A 25,25 0 0,1 195,190 L 170,190 Z" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+            <text x="185" y="168" font-size="9" font-weight="800" fill="#0369A1">AND EPP</text>
+
+            <!-- COMPUERTA AND 2: CONDICIÓN DE ARRANQUE M0.0 -->
+            <path d="M 240,60 L 265,60 A 35,35 0 0,1 265,130 L 240,130 Z" fill="#F8FAFC" stroke="#334155" stroke-width="2"/>
+            <text x="254" y="98" font-size="10" font-weight="800" fill="#475569">AND</text>
+
+            <!-- BIESTABLE SR FLIP-FLOP (M0.0) -->
+            <rect x="320" y="70" width="65" height="85" rx="4" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
+            <text x="352" y="90" font-size="11" font-weight="800" fill="#0284C7" text-anchor="middle">SR M0.0</text>
+            <text x="332" y="108" font-size="9" font-weight="700" fill="#475569">S</text>
+            <text x="332" y="142" font-size="9" font-weight="700" fill="#DC2626">R</text>
+            <text x="372" y="108" font-size="9" font-weight="700" fill="#16A34A">Q</text>
+
+            <!-- CASCADA TON 1 A TON 5 -->
+            <!-- TON 1 -->
+            <g transform="translate(430, 40)">
+              <rect x="0" y="0" width="80" height="55" rx="4" fill="#F1F5F9" stroke="#0284C7" stroke-width="2" id="gateTon1"/>
+              <text x="40" y="18" font-size="10" font-weight="800" fill="#0F172A" text-anchor="middle">TON 1</text>
+              <text x="40" y="32" font-size="8" fill="#475569" text-anchor="middle">PT=3s (Jabón)</text>
+              <text x="40" y="47" font-size="9" font-weight="700" fill="#0284C7" text-anchor="middle" id="gateTon1Val">ET: 0.0s</text>
+            </g>
+
+            <!-- TON 2 -->
+            <g transform="translate(430, 120)">
+              <rect x="0" y="0" width="80" height="55" rx="4" fill="#F1F5F9" stroke="#F59E0B" stroke-width="2" id="gateTon2"/>
+              <text x="40" y="18" font-size="10" font-weight="800" fill="#0F172A" text-anchor="middle">TON 2</text>
+              <text x="40" y="32" font-size="8" fill="#475569" text-anchor="middle">PT=20s (Frotado)</text>
+              <text x="40" y="47" font-size="9" font-weight="700" fill="#D97706" text-anchor="middle" id="gateTon2Val">ET: 0.0s</text>
+            </g>
+
+            <!-- TON 3 -->
+            <g transform="translate(430, 200)">
+              <rect x="0" y="0" width="80" height="55" rx="4" fill="#F1F5F9" stroke="#0EA5E9" stroke-width="2" id="gateTon3"/>
+              <text x="40" y="18" font-size="10" font-weight="800" fill="#0F172A" text-anchor="middle">TON 3</text>
+              <text x="40" y="32" font-size="8" fill="#475569" text-anchor="middle">PT=10s (Agua)</text>
+              <text x="40" y="47" font-size="9" font-weight="700" fill="#0284C7" text-anchor="middle" id="gateTon3Val">ET: 0.0s</text>
+            </g>
+
+            <!-- TON 4 -->
+            <g transform="translate(430, 280)">
+              <rect x="0" y="0" width="80" height="55" rx="4" fill="#F1F5F9" stroke="#14B8A6" stroke-width="2" id="gateTon4"/>
+              <text x="40" y="18" font-size="10" font-weight="800" fill="#0F172A" text-anchor="middle">TON 4</text>
+              <text x="40" y="32" font-size="8" fill="#475569" text-anchor="middle">PT=3s (Spray)</text>
+              <text x="40" y="47" font-size="9" font-weight="700" fill="#0D9488" text-anchor="middle" id="gateTon4Val">ET: 0.0s</text>
+            </g>
+
+            <!-- COMPUERTA AND FINAL: PERMISIVO DE ACCESO (M0.5 AND EPP_OK) -->
+            <path d="M 560,320 L 590,320 A 30,30 0 0,1 590,380 L 560,380 Z" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+            <text x="576" y="354" font-size="9" font-weight="800" fill="#15803D">AND PUERTA</text>
+
+            <!-- TON 5 -->
+            <g transform="translate(650, 325)">
+              <rect x="0" y="0" width="80" height="55" rx="4" fill="#F1F5F9" stroke="#16A34A" stroke-width="2" id="gateTon5"/>
+              <text x="40" y="18" font-size="10" font-weight="800" fill="#0F172A" text-anchor="middle">TON 5</text>
+              <text x="40" y="32" font-size="8" fill="#475569" text-anchor="middle">PT=10s (Puerta)</text>
+              <text x="40" y="47" font-size="9" font-weight="700" fill="#15803D" text-anchor="middle" id="gateTon5Val">ET: 0.0s</text>
+            </g>
+
+            <!-- SALIDAS DIGITALES (DERECHA) -->
+            <!-- Q0.0 -->
+            <g transform="translate(760, 48)">
+              <rect id="boxQ00" x="0" y="0" width="160" height="32" rx="6" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#CBD5E1" id="circleQ00"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#0F172A">Q0.0 (Jabón 3s)</text>
+            </g>
+
+            <!-- Q0.5 -->
+            <g transform="translate(760, 128)">
+              <rect id="boxQ05" x="0" y="0" width="160" height="32" rx="6" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#CBD5E1" id="circleQ05"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#0F172A">Q0.5 (Frotado 20s)</text>
+            </g>
+
+            <!-- Q0.1 -->
+            <g transform="translate(760, 208)">
+              <rect id="boxQ01" x="0" y="0" width="160" height="32" rx="6" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#CBD5E1" id="circleQ01"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#0F172A">Q0.1 (Agua 10s)</text>
+            </g>
+
+            <!-- Q0.2 -->
+            <g transform="translate(760, 288)">
+              <rect id="boxQ02" x="0" y="0" width="160" height="32" rx="6" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#CBD5E1" id="circleQ02"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#0F172A">Q0.2 (Spray 3s)</text>
+            </g>
+
+            <!-- Q0.3 -->
+            <g transform="translate(760, 368)">
+              <rect id="boxQ03" x="0" y="0" width="160" height="32" rx="6" fill="#F8FAFC" stroke="#94A3B8" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#CBD5E1" id="circleQ03"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#0F172A">Q0.3 (Puerta 10s)</text>
+            </g>
+
+            <!-- Q0.4 -->
+            <g transform="translate(760, 448)">
+              <rect id="boxQ04" x="0" y="0" width="160" height="32" rx="6" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+              <circle cx="16" cy="16" r="6" fill="#DC2626" id="circleQ04"/>
+              <text x="32" y="20" font-size="11" font-weight="800" fill="#991B1B">Q0.4 (Luz Roja Bloq)</text>
+            </g>
+
+            <!-- PISTAS VECTORIALES INTERACTIVAS -->
+            <g id="logicWires" stroke="#94A3B8" stroke-width="2.5" fill="none">
+              <path id="wireI00" d="M 110,46 L 240,75" />
+              <path id="wireI01" d="M 110,96 L 240,96" />
+              <path id="wireI04" d="M 110,146 L 170,150" />
+              <path id="wireI05" d="M 110,196 L 170,180" />
+              <path id="wireEppOut" d="M 220,165 L 230,165 L 230,115 L 240,115" />
+              <path id="wireEppToFinal" d="M 220,165 L 220,410 L 530,410 L 530,365 L 560,365" stroke-dasharray="3"/>
+              <path id="wireNotI02" d="M 171,246 L 210,246 L 210,122 L 240,122" />
+              <path id="wireNotI03" d="M 171,296 L 225,296 L 225,127 L 240,127" />
+
+              <path id="wireAndOut" d="M 300,95 L 320,95" />
+              <path id="wireM00Bus" d="M 385,110 L 405,110 L 405,65 L 430,65" />
+
+              <path id="wireTon1Out" d="M 510,65 L 760,64" />
+              <path id="wireTon1Cascade" d="M 490,95 L 490,110 L 420,110 L 420,145 L 430,145" />
+              <path id="wireTon2Out" d="M 510,145 L 760,144" />
+              <path id="wireTon2Cascade" d="M 490,175 L 490,190 L 420,190 L 420,225 L 430,225" />
+              <path id="wireTon3Out" d="M 510,225 L 760,224" />
+              <path id="wireTon3Cascade" d="M 490,255 L 490,270 L 420,270 L 420,305 L 430,305" />
+              <path id="wireTon4Out" d="M 510,305 L 760,304" />
+              <path id="wireTon4ToFinal" d="M 510,305 L 535,305 L 535,335 L 560,335" />
+
+              <path id="wireFinalAndOut" d="M 620,350 L 650,350" />
+              <path id="wireTon5Out" d="M 730,350 L 745,350 L 745,384 L 760,384" />
+              <path id="wireRedInvert" d="M 745,384 L 745,464 L 760,464" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="boolean-panel">
+          <div class="math-card">
+            <h3>Álgebra Booleana y Ecuaciones del Sistema</h3>
+
+            <div class="formula-item">
+              <div class="formula-tag">1. Permisivo EPP (Cofia y Cubrebocas)</div>
+              <div class="formula-expr">M_{EPP} = I_{0.4} · I_{0.5}</div>
+              <div class="formula-desc">Exige simultáneamente cofia reglamentaria y mascarilla facial hermética.</div>
+            </div>
+
+            <div class="formula-item">
+              <div class="formula-tag">2. Inicio de Secuencia (Set M0.0)</div>
+              <div class="formula-expr">S_{M0.0} = I_{0.0} · I_{0.1} · M_{EPP} · \overline{I_{0.2}} · \overline{I_{0.3}} · \overline{M_{0.5}}</div>
+              <div class="formula-desc">Arranque permisivo sólo si el operario porta EPP completo y coloca manos.</div>
+            </div>
+
+            <div class="formula-item">
+              <div class="formula-tag">3. Cascada de Salidas Secuenciales</div>
+              <div class="formula-expr">Q_{0.0} = M_{0.0} · \overline{T_{1}.Q} \quad (\text{Jabón 3s})</div>
+              <div class="formula-expr">Q_{0.5} = M_{0.0} · T_{1}.Q · \overline{T_{2}.Q} \quad (\text{Frotado 20s})</div>
+              <div class="formula-expr">Q_{0.1} = M_{0.0} · T_{2}.Q · \overline{T_{3}.Q} \quad (\text{Agua 10s})</div>
+              <div class="formula-expr">Q_{0.2} = M_{0.0} · T_{3}.Q · \overline{T_{4}.Q} \quad (\text{Spray 3s})</div>
+            </div>
+
+            <div class="formula-item">
+              <div class="formula-tag">4. Permisivo Final de Apertura (Q0.3)</div>
+              <div class="formula-expr">Q_{0.3} = M_{0.5} · M_{EPP} · \overline{T_{5}.Q}</div>
+              <div class="formula-desc">Desbloqueo de puerta por 10s: Exige lavado terminado (M0.5) Y confirmación de EPP presente.</div>
+            </div>
+
+            <div class="formula-item" style="border-left-color: #DC2626;">
+              <div class="formula-tag" style="color: #991B1B;">5. Interbloqueo de Abandono o Violación EPP</div>
+              <div class="formula-expr" style="color: #DC2626;">R_{Total} = (M_{0.0} · \overline{M_{0.5}} · \overline{I_{0.1}}) + (M_{0.0} · \overline{M_{EPP}}) + I_{0.2} + I_{0.3}</div>
+              <div class="formula-desc">Si retira manos o se quita la mascarilla/cofia, resetea a cero y bloquea la puerta.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+"""
+
+HTML_PART_5 = """
+    <!-- ==========================================================================
+         PESTAÑA 3: EXPLICACIÓN Y CONTEXTUALIZACIÓN PROFUNDA (5 BLOQUES)
+         ========================================================================== -->
+    <section id="panel2" class="tab-panel">
+      <div class="doc-grid">
+
+        <!-- BLOQUE 1 -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            1. Contextualización Sectorial: Salas de Operaciones e Industria Alimentaria
+          </h2>
+          <p>
+            En entornos clínicos de alta criticidad, como las <strong>Salas de Operaciones (Quirófanos Clase ISO 5 a ISO 7 bajo UNE 100713)</strong>, las <em>Infecciones del Sitio Quirúrgico (ISQ)</em> y las <em>Infecciones Asociadas a la Atención en Salud (IAAS)</em> representan una de las principales causas de morbimortalidad postoperatoria y sobrecostos hospitalarios. De forma análoga, en la <strong>Industria Alimentaria de Alto Riesgo</strong> regida por <strong>HACCP, ISO 22000, FSSC 22000 y BPM</strong>, la introducción inadvertida de patógenos o cuerpos extraños puede originar brotes de toxiinfecciones alimentarias masivas y costosos retiros de producto del mercado.
+          </p>
+          <p style="margin-top: 10px;">
+            El vector de contaminación más frecuente es el ser humano, a través de tres vías críticas:
+          </p>
+          <ul>
+            <li><strong>Desprendimiento Capilar y Dérmico:</strong> Un ser humano desprende naturalmente entre 50 y 100 cabellos diarios y millones de escamas de piel cargadas de <em>Staphylococcus aureus</em> meticilino-resistente (MRSA) y <em>Staphylococcus epidermidis</em>. La <strong>cofia quirúrgica</strong> retiene mecánicamente estas partículas.</li>
+            <li><strong>Emisión de Microgotas Respiratorias:</strong> Al hablar, respirar o toser, se generan aerosoles cargados de flora nasofaríngea y virus. El <strong>cubrebocas / mascarilla de grado quirúrgico</strong> ejerce una barrera de filtración bacteriana (BFE &ge; 98%).</li>
+            <li><strong>Manos como Fómites Vivos:</strong> La flora transitoria cutánea transporta enterobacterias (<em>Salmonella</em>, <em>E. coli</em>) o gérmenes intrahospitalarios. El protocolo de <strong>46 segundos (Jabón 3s &rarr; Frotado 20s &rarr; Enjuague 10s &rarr; Spray 3s)</strong> desestructura la bicapa lipídica de bacterias y virus según directrices de la OMS.</li>
+          </ul>
+          <p style="margin-top: 10px;">
+            Inspirado en las esclusas de acceso hermético de plantas de vanguardia en <strong>Japón (protocolos Kaizen/Chubo)</strong>, <strong>Corea del Sur (estándares sanitarios MFDS)</strong> y <strong>China (normativa nacional de inocuidad GB 14881)</strong>, este sistema transforma el acceso peatonal en una barrera inviolable gobernada por lógica determinística.
+          </p>
+        </div>
+
+        <!-- BLOQUE 2 -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            2. Justificación de la Automatización con PLC frente a la Supervisión Humana
+          </h2>
+          <p>
+            Históricamente, el control de acceso higiénico ha dependido de la supervisión visual mediante guardias o de la disciplina individual del personal. La ingeniería de factores humanos demuestra que este modelo fracasa por:
+          </p>
+          <ul>
+            <li><strong>Fatiga Cognitiva y Complacencia:</strong> En turnos hospitalarios o plantas procesadoras de 8 a 12 horas, los supervisores humanos disminuyen su agudeza perceptiva, tolerando personal con cubrebocas por debajo de la nariz o lavados de manos superficiales de menos de 5 segundos.</li>
+            <li><strong>Presión de Tiempo y Sesgos Subjetivos:</strong> El personal con prisa suele omitir etapas del lavado. Un supervisor humano puede ceder ante jerarquías o prisas de cirujanos o supervisores de planta.</li>
+            <li><strong>Falta de Registro Inalterable:</strong> La supervisión manual no genera trazas digitales de auditoría en tiempo real.</li>
+          </ul>
+          <p style="margin-top: 10px;">
+            <strong>Ventajas del Controlador Lógico Programable (PLC):</strong>
+          </p>
+          <ul>
+            <li><strong>Determinismo Temporal Inquebrantable:</strong> El PLC escanea su lógica cada 50 ms. Los 20 segundos de frotado no admiten atajos; si faltan 100 ms, la compuerta no se desbloquea.</li>
+            <li><strong>Trazabilidad y Auditoría Continua:</strong> El bloque contador <code>CTU C1</code> registra con precisión matemática el número de operarios que han cumplido el protocolo al 100%.</li>
+            <li><strong>Ergonomía Touchless (Cero Fómites):</strong> Todo el accionamiento se efectúa por barreras ópticas y sensores infrarrojos. El operario nunca toca manijas ni llaves metálicas donde pudiera ocurrir recontaminación.</li>
+          </ul>
+        </div>
+
+        <!-- BLOQUE 3 -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10h10"/><path d="M7 14h10"/></svg>
+            3. Arquitectura de Sensores y Principio de Funcionamiento de Cada Módulo
+          </h2>
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Módulo</th>
+                <th>Sensor Físico</th>
+                <th>Señal PLC</th>
+                <th>Principio Físico / Tecnológico</th>
+                <th>Criterio de Validación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Verificación de Cofia</strong></td>
+                <td>Cámara Industrial / Sensor Óptico Superior</td>
+                <td><span class="badge-code">I0.4</span></td>
+                <td>Reflectometría espectral o cámara de visión artificial con filtro de color y textura. Detecta la reflectancia de la tela no tejida (polipropileno spunbond) vs. la queratina del cabello humano.</td>
+                <td>Nivel lógico 1 si la cobertura capilar es &ge; 98% en la coronilla y sienes. 0 si hay cabello expuesto.</td>
+              </tr>
+              <tr>
+                <td><strong>Verificación de Cubrebocas</strong></td>
+                <td>Cámara Térmica / Infrarrojo Facial (NIR)</td>
+                <td><span class="badge-code">I0.5</span></td>
+                <td>Sensor óptico de contraste facial o cámara con red neuronal embebida que verifica la presencia del tejido protector cubriendo desde el tabique nasal hasta el mentón.</td>
+                <td>Nivel lógico 1 si nariz y boca están cubiertas herméticamente. 0 si la mascarilla está mal colocada o ausente.</td>
+              </tr>
+              <tr>
+                <td><strong>Presencia en Esclusa</strong></td>
+                <td>Alfombra Piezorresistiva / Barrera Fotoeléctrica</td>
+                <td><span class="badge-code">I0.0</span></td>
+                <td>Sensor óptico difuso infrarrojo de 24V DC que detecta el corte de haz o sensor de presión en alfombra sanitaria de entrada.</td>
+                <td>Nivel lógico 1 mientras el operario permanezca sobre el área de lavado.</td>
+              </tr>
+              <tr>
+                <td><strong>Sensor de Manos</strong></td>
+                <td>Barrera Infrarroja Modulada bajo Grifo</td>
+                <td><span class="badge-code">I0.1</span></td>
+                <td>Emisor y receptor infrarrojo con modulación de frecuencia inmune a luz ambiental. Detecta el volumen de las manos bajo las boquillas.</td>
+                <td>Nivel lógico 1 con manos en bacha. Nivel lógico 0 genera aborto inmediato anti-abandono.</td>
+              </tr>
+              <tr>
+                <td><strong>Actuadores Fluidos</strong></td>
+                <td>Electroválvulas y Microbombas NC (24V DC)</td>
+                <td><span class="badge-code">Q0.0, Q0.1, Q0.2</span></td>
+                <td>Válvulas solenoides de diafragma y bombas peristálticas con retorno por resorte (Normalmente Cerradas por seguridad).</td>
+                <td>Se energizan secuencialmente por transistores o relés de potencia.</td>
+              </tr>
+              <tr>
+                <td><strong>Cerradura de Paso</strong></td>
+                <td>Electroimán de Retención (600 lbs)</td>
+                <td><span class="badge-code">Q0.3</span></td>
+                <td>Cerradura magnética Fail-Safe (energizada bloquea / desenergizada libera para evacuación según norma de seguridad de vida).</td>
+                <td>Se desbloquea únicamente durante los 10 segundos de la Etapa 5.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- BLOQUE 4 -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            4. Alcance Técnico del Proyecto y Límites Operativos
+          </h2>
+          <p><strong>Alcance del Sistema Automatizado:</strong></p>
+          <ul>
+            <li>Control discreto determinístico mediante autómata programable bajo estándar <strong>IEC 61131-3</strong>.</li>
+            <li>Enclavamiento de seguridad biológica bidireccional: nadie accede sin EPP completo Y sin lavado concluido.</li>
+            <li>Protección anti-tamper en tiempo real: aborto instantáneo a 0 segundos si el usuario retira las manos o se despoja de la cofia/mascarilla antes de tiempo.</li>
+            <li>Señalización semafórica normalizada <strong>ISA-101</strong> (Rojo = Bloqueado, Amarillo = Frotado en curso, Verde = Acceso libre).</li>
+            <li>Auditoría automatizada mediante registro inalterable en el contador <code>CTU C1</code>.</li>
+          </ul>
+          <p style="margin-top: 10px;"><strong>Límites Operativos:</strong></p>
+          <ul>
+            <li><strong>Topología Unidireccional:</strong> Diseñado como esclusa de entrada hacia zona limpia (la salida suele realizarse por compuerta de escape libre con barra antipánico).</li>
+            <li><strong>Lógica Discreta 24V DC:</strong> Toda la lógica es booleana on/off; las cámaras de visión artificial entregan una salida a relé/transistor limpia hacia las entradas digitales del PLC.</li>
+            <li><strong>Alcance Sanitario:</strong> En quirófanos, esta compuerta asegura la preparación aséptica inicial y el porte de EPP para el ingreso a la sala de operaciones. El lavado quirúrgico profundo de cirujanos (con cepillo y clorhexidina en antebrazos) se complementa en áreas anexas sin alterar el control de acceso del recinto.</li>
+          </ul>
+        </div>
+
+        <!-- BLOQUE 5 -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/></svg>
+            5. Tabla Oficial de Asignación I/O y Matriz de Verdad (Condición de Acceso)
+          </h2>
+          <p>
+            La siguiente <strong>Matriz de Verdad</strong> demuestra de forma matemática que <em>basta con que un solo requisito falle</em> (sin cofia, sin mascarilla, o lavado incompleto) para que la compuerta permanezca en nivel lógico 0 (Bloqueada) y la baliza roja permanezca en nivel lógico 1:
+          </p>
+
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Caso de Prueba</th>
+                <th>Cofia (I0.4)</th>
+                <th>Cubrebocas (I0.5)</th>
+                <th>Presencia (I0.0)</th>
+                <th>Manos (I0.1)</th>
+                <th>Lavado Concluido (M0.5)</th>
+                <th>Cerradura Q0.3 (Verde)</th>
+                <th>Baliza Roja Q0.4</th>
+                <th>Diagnóstico del PLC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A. Reposo</strong></td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>Esclusa desocupada. Espera pasiva.</td>
+              </tr>
+              <tr>
+                <td><strong>B. Falla Cofia</strong></td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>Bloqueo: Cabello expuesto detectado por I0.4.</td>
+              </tr>
+              <tr>
+                <td><strong>C. Falla Mascarilla</strong></td>
+                <td>1</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>Bloqueo: Cubrebocas ausente o mal puesto (I0.5).</td>
+              </tr>
+              <tr>
+                <td><strong>D. Abandono Lavado</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td>0</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>Infracción: Manos retiradas antes de completar ciclo. Reset a 0s.</td>
+              </tr>
+              <tr>
+                <td><strong>E. Lavado en curso</strong></td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>Ciclo activo (Jabón/Frotado/Agua/Spray). Puerta asegurada.</td>
+              </tr>
+              <tr style="background: #DCFCE7;">
+                <td><strong>F. ACCESO VÁLIDO</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td>-</td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td><strong style="color:#15803D;">1</strong></td>
+                <td><strong style="color:#DC2626;">0</strong></td>
+                <td><strong>¡ACCESO CONCEDIDO! Puerta liberada 10s (Q0.3=1, CTU C1 +1).</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         PESTAÑA 4: MANUAL DE OPERACIÓN Y GUÍA DE MIGRACIÓN A PROTEUS
+         ========================================================================== -->
+    <section id="panel3" class="tab-panel">
+      <div class="doc-grid">
+
+        <!-- Manual Paso a Paso para la Exposición -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Manual de Demostración en Aula: Evaluación de los 4 Modos
+          </h2>
+          <p>Para exponer la aplicación ante un comité docente o industrial, ejecute la siguiente secuencia pedagógica utilizando el <strong>Selector de Subsistemas</strong>:</p>
+
+          <ol style="margin-top: 10px;">
+            <li>
+              <strong>Demostración de Modo 1: Subsistema de Cofia (`I0.4`):</strong>
+              <p>Haga clic en el botón superior <em>"Modo 1: Verificación de Cofia"</em>. Muestre cómo el escáner superior ilumina la cabeza del avatar. Conmute el botón <strong>"Cofia Colocada (I0.4)"</strong> a OFF. Observe cómo el haz se torna rojo, se expone el cabello humano en el avatar, se dispara la alarma de bioseguridad capilar y la compuerta bloquea cualquier intento de ingreso.</p>
+            </li>
+            <li>
+              <strong>Demostración de Modo 2: Subsistema de Cubrebocas (`I0.5`):</strong>
+              <p>Seleccione <em>"Modo 2: Verificación de Cubrebocas"</em>. Conmute el botón <strong>"Cubrebocas Puesto (I0.5)"</strong> a OFF. Muestre cómo el escáner facial indica fallo de mascarilla, la boca/nariz del avatar quedan descubiertas y el display HMI alerta de riesgo respiratorio.</p>
+            </li>
+            <li>
+              <strong>Demostración de Modo 3: Subsistema de Higiene de Manos (5 Etapas):</strong>
+              <p>Seleccione <em>"Modo 3: Higiene de Manos"</em>. Active la velocidad <strong>"3x Exposición"</strong>. Conmute Presencia (`I0.0`) y Manos (`I0.1`). Muestre la animación de gotas de jabón (3s), el frotado enérgico con baliza amarilla (20s), el enjuague de agua (10s) y el spray desinfectante (3s). Demuestre la falla retirando las manos a mitad del frotado: el PLC reinicia el cronómetro a 0 segundos y rebloquea el acceso.</p>
+            </li>
+            <li>
+              <strong>Demostración de Modo 4: Sistema Integrado Completo (Quirófano / HACCP):</strong>
+              <p>Seleccione <em>"Modo 4: Sistema Integrado Completo"</em> o active el botón <strong>"▶ Demo Automática"</strong>. El sistema validará que tanto la cofia como la mascarilla estén en 1, esperará la finalización exitosa de los 46 segundos de lavado, incrementará el contador `CTU C1` (+1), desbloqueará la cerradura magnética y encenderá la luz verde durante 10 segundos para el paso del operario.</p>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Guía de Implementación en Proteus VSM -->
+        <div class="doc-section">
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
+            Guía de Migración e Implementación en Proteus (ISIS / VSM)
+          </h2>
+          <p>
+            Para compilar y simular este sistema en <strong>Proteus ISIS</strong> empleando <strong>LDmicro</strong> o firmware C en microcontroladores <strong>PIC16F877A</strong> o <strong>ATmega328P (Arduino UNO)</strong>:
+          </p>
+
+          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--navy-dark); margin: 14px 0 6px 0;">Mapa Completo de Pines y Acondicionamiento Electrónico</h3>
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Función PLC</th>
+                <th>Variable</th>
+                <th>Pin PIC16F877A</th>
+                <th>Pin ATmega328P</th>
+                <th>Acondicionamiento de Circuito en Proteus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sensor Presencia</td>
+                <td><span class="badge-code">I0.0</span></td>
+                <td>PORTB.0 (Pin 33)</td>
+                <td>Pin D2</td>
+                <td>Optoacoplador PC817 + Resistencia Pull-Down 10 kΩ</td>
+              </tr>
+              <tr>
+                <td>Sensor Manos</td>
+                <td><span class="badge-code">I0.1</span></td>
+                <td>PORTB.1 (Pin 34)</td>
+                <td>Pin D3</td>
+                <td>Optoacoplador PC817 + Resistencia Pull-Down 10 kΩ</td>
+              </tr>
+              <tr>
+                <td>Stop Normal</td>
+                <td><span class="badge-code">I0.2</span></td>
+                <td>PORTB.2 (Pin 35)</td>
+                <td>Pin D4</td>
+                <td>Pulsador rasante con Pull-Down 10 kΩ</td>
+              </tr>
+              <tr>
+                <td>Paro de Emergencia</td>
+                <td><span class="badge-code">I0.3</span></td>
+                <td>PORTB.3 (Pin 36)</td>
+                <td>Pin D5</td>
+                <td>Hongo NC con Pull-Up a 5V (Seguridad positiva)</td>
+              </tr>
+              <tr>
+                <td>Sensor Cofia (Visión)</td>
+                <td><span class="badge-code">I0.4</span></td>
+                <td>PORTB.4 (Pin 37)</td>
+                <td>Pin D6</td>
+                <td>Optoacoplador PC817 + Pull-Down 10 kΩ (Salida de cámara)</td>
+              </tr>
+              <tr>
+                <td>Sensor Cubrebocas</td>
+                <td><span class="badge-code">I0.5</span></td>
+                <td>PORTB.5 (Pin 38)</td>
+                <td>Pin D7</td>
+                <td>Optoacoplador PC817 + Pull-Down 10 kΩ (Salida de cámara)</td>
+              </tr>
+              <tr>
+                <td>Electroválvula Jabón</td>
+                <td><span class="badge-code">Q0.0</span></td>
+                <td>PORTD.0 (Pin 19)</td>
+                <td>Pin D8</td>
+                <td>ULN2803 + Relé 24V DC + Diodo 1N4007</td>
+              </tr>
+              <tr>
+                <td>Electroválvula Agua</td>
+                <td><span class="badge-code">Q0.1</span></td>
+                <td>PORTD.1 (Pin 20)</td>
+                <td>Pin D9</td>
+                <td>ULN2803 + Relé 24V DC + Diodo 1N4007</td>
+              </tr>
+              <tr>
+                <td>Bomba Spray Alcohol</td>
+                <td><span class="badge-code">Q0.2</span></td>
+                <td>PORTD.2 (Pin 21)</td>
+                <td>Pin D10</td>
+                <td>ULN2803 + Relé 24V DC + Diodo 1N4007</td>
+              </tr>
+              <tr>
+                <td>Cerradura + Baliza Verde</td>
+                <td><span class="badge-code">Q0.3</span></td>
+                <td>PORTD.3 (Pin 22)</td>
+                <td>Pin D11</td>
+                <td>ULN2803 + Relé 24V DC (Solenoide cerradura)</td>
+              </tr>
+              <tr>
+                <td>Baliza Roja (Bloqueo)</td>
+                <td><span class="badge-code">Q0.4</span></td>
+                <td>PORTD.4 (Pin 27)</td>
+                <td>Pin D12</td>
+                <td>ULN2803 + Indicador LED / Lámpara 24V DC</td>
+              </tr>
+              <tr>
+                <td>Baliza Amarilla (Frotado)</td>
+                <td><span class="badge-code">Q0.5</span></td>
+                <td>PORTD.5 (Pin 28)</td>
+                <td>Pin D13</td>
+                <td>ULN2803 + Indicador LED / Lámpara 24V DC</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--navy-dark); margin: 16px 0 6px 0;">Firmware C / Arduino Actualizado con Lógica EPP</h3>
+          <pre class="code-block"><code><span class="com">// =========================================================================</span>
+<span class="com">// SANITIGATE PLC v3.0 — FIRMWARE DETERMINÍSTICO CON VALIDACIÓN EPP</span>
+<span class="com">// =========================================================================</span>
+<span class="kwd">const int</span> PIN_I00 = 2;  <span class="com">// Sensor Presencia</span>
+<span class="kwd">const int</span> PIN_I01 = 3;  <span class="com">// Sensor Manos</span>
+<span class="kwd">const int</span> PIN_I02 = 4;  <span class="com">// Stop Normal</span>
+<span class="kwd">const int</span> PIN_I03 = 5;  <span class="com">// Paro Emergencia</span>
+<span class="kwd">const int</span> PIN_I04 = 6;  <span class="com">// Sensor Cofia (Visión)</span>
+<span class="kwd">const int</span> PIN_I05 = 7;  <span class="com">// Sensor Cubrebocas</span>
+
+<span class="kwd">const int</span> PIN_Q00 = 8;  <span class="com">// Jabón (3s)</span>
+<span class="kwd">const int</span> PIN_Q01 = 9;  <span class="com">// Agua (10s)</span>
+<span class="kwd">const int</span> PIN_Q02 = 10; <span class="com">// Spray Desinfectante (3s)</span>
+<span class="kwd">const int</span> PIN_Q03 = 11; <span class="com">// Cerradura + Baliza Verde (10s)</span>
+<span class="kwd">const int</span> PIN_Q04 = 12; <span class="com">// Baliza Roja (Bloqueado)</span>
+<span class="kwd">const int</span> PIN_Q05 = 13; <span class="com">// Baliza Amarilla (Frotado 20s)</span>
+
+<span class="kwd">enum</span> EstadoSanitario { IDLE, JABON, FROTADO, ENJUAGUE, SPRAY, ACCESO };
+EstadoSanitario etapaActual = IDLE;
+
+<span class="kwd">unsigned long</span> tiempoInicioEtapa = 0;
+<span class="kwd">unsigned int</span> contadorPersonal = 0;
+
+<span class="kwd">void</span> setup() {
+  pinMode(PIN_I00, INPUT); pinMode(PIN_I01, INPUT);
+  pinMode(PIN_I02, INPUT); pinMode(PIN_I03, INPUT);
+  pinMode(PIN_I04, INPUT); pinMode(PIN_I05, INPUT);
+
+  pinMode(PIN_Q00, OUTPUT); pinMode(PIN_Q01, OUTPUT);
+  pinMode(PIN_Q02, OUTPUT); pinMode(PIN_Q03, OUTPUT);
+  pinMode(PIN_Q04, OUTPUT); pinMode(PIN_Q05, OUTPUT);
+
+  apagarActuadores();
+  digitalWrite(PIN_Q04, HIGH); <span class="com">// Puerta bloqueada por defecto</span>
+}
+
+<span class="kwd">void</span> loop() {
+  <span class="kwd">bool</span> pres = digitalRead(PIN_I00);
+  <span class="kwd">bool</span> manos = digitalRead(PIN_I01);
+  <span class="kwd">bool</span> stop = digitalRead(PIN_I02);
+  <span class="kwd">bool</span> emerg = digitalRead(PIN_I03);
+  <span class="kwd">bool</span> cofia = digitalRead(PIN_I04);
+  <span class="kwd">bool</span> cubrebocas = digitalRead(PIN_I05);
+
+  <span class="kwd">bool</span> eppOK = cofia && cubrebocas;
+
+  <span class="com">// 1. Interbloqueo de Seguridad</span>
+  <span class="kwd">if</span> (emerg || stop) {
+    etapaActual = IDLE;
+    apagarActuadores();
+    digitalWrite(PIN_Q04, HIGH);
+    <span class="kwd">return</span>;
+  }
+
+  <span class="com">// 2. Interbloqueo Anti-Violación EPP durante el proceso</span>
+  <span class="kwd">if</span> (etapaActual != IDLE && !eppOK) {
+    etapaActual = IDLE; <span class="com">// Aborto inmediato si se quita cofia o mascarilla</span>
+    apagarActuadores();
+    digitalWrite(PIN_Q04, HIGH);
+    <span class="kwd">return</span>;
+  }
+
+  <span class="com">// 3. Interbloqueo Anti-Abandono de Manos</span>
+  <span class="kwd">if</span> (etapaActual != IDLE && etapaActual != ACCESO && !manos) {
+    etapaActual = IDLE; <span class="com">// Aborto a 0 segundos</span>
+    apagarActuadores();
+    digitalWrite(PIN_Q04, HIGH);
+    <span class="kwd">return</span>;
+  }
+
+  <span class="com">// 4. Máquina de Estados Finitos (FSM)</span>
+  <span class="kwd">unsigned long</span> ahora = millis();
+  <span class="kwd">unsigned long</span> transcurrido = ahora - tiempoInicioEtapa;
+
+  <span class="kwd">switch</span> (etapaActual) {
+    <span class="kwd">case</span> IDLE:
+      digitalWrite(PIN_Q04, HIGH); <span class="com">// Luz Roja</span>
+      <span class="kwd">if</span> (pres && manos && eppOK) {
+        etapaActual = JABON;
+        tiempoInicioEtapa = millis();
+        digitalWrite(PIN_Q00, HIGH); <span class="com">// Dosificar Jabón</span>
+      }
+      <span class="kwd">break</span>;
+
+    <span class="kwd">case</span> JABON: <span class="com">// 3.0 s</span>
+      <span class="kwd">if</span> (transcurrido >= 3000) {
+        digitalWrite(PIN_Q00, LOW);
+        etapaActual = FROTADO;
+        tiempoInicioEtapa = millis();
+        digitalWrite(PIN_Q05, HIGH); <span class="com">// Luz Amarilla Frotado</span>
+      }
+      <span class="kwd">break</span>;
+
+    <span class="kwd">case</span> FROTADO: <span class="com">// 20.0 s</span>
+      <span class="kwd">if</span> (transcurrido >= 20000) {
+        digitalWrite(PIN_Q05, LOW);
+        etapaActual = ENJUAGUE;
+        tiempoInicioEtapa = millis();
+        digitalWrite(PIN_Q01, HIGH); <span class="com">// Activar Agua</span>
+      }
+      <span class="kwd">break</span>;
+
+    <span class="kwd">case</span> ENJUAGUE: <span class="com">// 10.0 s</span>
+      <span class="kwd">if</span> (transcurrido >= 10000) {
+        digitalWrite(PIN_Q01, LOW);
+        etapaActual = SPRAY;
+        tiempoInicioEtapa = millis();
+        digitalWrite(PIN_Q02, HIGH); <span class="com">// Activar Spray</span>
+      }
+      <span class="kwd">break</span>;
+
+    <span class="kwd">case</span> SPRAY: <span class="com">// 3.0 s</span>
+      <span class="kwd">if</span> (transcurrido >= 3000) {
+        digitalWrite(PIN_Q02, LOW);
+        <span class="com">// Validación estricta final de EPP antes de abrir</span>
+        <span class="kwd">if</span> (eppOK) {
+          digitalWrite(PIN_Q04, LOW);  <span class="com">// Apagar Luz Roja</span>
+          digitalWrite(PIN_Q03, HIGH); <span class="com">// Desbloquear Puerta + Luz Verde</span>
+          contadorPersonal++;
+          etapaActual = ACCESO;
+          tiempoInicioEtapa = millis();
+        } <span class="kwd">else</span> {
+          etapaActual = IDLE;
+        }
+      }
+      <span class="kwd">break</span>;
+
+    <span class="kwd">case</span> ACCESO: <span class="com">// 10.0 s de paso peatonal</span>
+      <span class="kwd">if</span> (transcurrido >= 10000) {
+        digitalWrite(PIN_Q03, LOW);  <span class="com">// Rebloquear Puerta</span>
+        digitalWrite(PIN_Q04, HIGH); <span class="com">// Luz Roja</span>
+        etapaActual = IDLE;
+      }
+      <span class="kwd">break</span>;
+  }
+}
+
+<span class="kwd">void</span> apagarActuadores() {
+  digitalWrite(PIN_Q00, LOW); digitalWrite(PIN_Q01, LOW);
+  digitalWrite(PIN_Q02, LOW); digitalWrite(PIN_Q03, LOW);
+  digitalWrite(PIN_Q05, LOW);
+}</code></pre>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p><strong>SanitiGate PLC v3.0</strong> — Sistema Integral de Inocuidad, Validación EPP y Control Secuencial IEC 61131-3.</p>
+    <p style="margin-top: 4px; font-size: 0.72rem;">Diseñado para Quirófanos (UNE 100713 / ISO 5) e Industria Alimentaria de Alta Exigencia (HACCP / ISO 22000).</p>
+  </footer>
+
+  <!-- ==========================================================================
+       MOTOR JAVASCRIPT DETERMINÍSTICO DEL PLC (50 MS) CON GESTIÓN DE SUBSISTEMAS
+       ========================================================================== -->
+  <script>
+    const PLC = {
+      // Entradas Digitales 24V DC
+      I0_0: false, // Presencia Operario
+      I0_1: false, // Sensor Óptico Manos
+      I0_2: false, // Stop Normal
+      I0_3: false, // Emergencia Enclavada
+      I0_4: true,  // Sensor Cofia (OK por defecto)
+      I0_5: true,  // Sensor Cubrebocas (OK por defecto)
+
+      // Salidas Digitales 24V DC
+      Q0_0: false, // Jabón (3s)
+      Q0_1: false, // Agua (10s)
+      Q0_2: false, // Spray Desinfectante (3s)
+      Q0_3: false, // Cerradura + Baliza Verde (10s)
+      Q0_4: true,  // Baliza Roja (Bloqueado)
+      Q0_5: false, // Baliza Amarilla (Frotado 20s)
+
+      // Marcas Internas
+      M_RUN: true,       // Seguridad OK
+      M_EPP_OK: true,    // EPP OK (I0.4 AND I0.5)
+      M0_0: false,       // Ciclo Activo
+      M0_5: false,       // Lavado Completado
+      M_ACCESS_GRANT: false, // Acceso Autorizado
+      M0_6: false,       // Alarma Abandono Manos
+      M0_8: false,       // Alarma Infracción EPP
+
+      // Temporizadores TON IEC 61131-3
+      T1: { PT: 3.0,  ET: 0.0, IN: false, DN: false },
+      T2: { PT: 20.0, ET: 0.0, IN: false, DN: false },
+      T3: { PT: 10.0, ET: 0.0, IN: false, DN: false },
+      T4: { PT: 3.0,  ET: 0.0, IN: false, DN: false },
+      T5: { PT: 10.0, ET: 0.0, IN: false, DN: false },
+
+      // Contador CTU C1
+      C1: { CV: 42, PV: 9999 },
+
+      // Estado y Configuración
+      speedMultiplier: 1.0,
+      scanIntervalMs: 50,
+      audioEnabled: true,
+      demoMode: false,
+      demoStep: 0,
+      demoTimer: 0,
+      activeTab: 0,
+      subsystemMode: 4 // 1: Hair, 2: Mask, 3: Hands, 4: Integrated
+    };
+
+    /* SÍNTESIS DE AUDIO REALISTA (WEB AUDIO API) */
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function toggleAudio() {
+      PLC.audioEnabled = !PLC.audioEnabled;
+      const icon = document.getElementById('audioIcon');
+      const text = document.getElementById('audioText');
+      if (PLC.audioEnabled) {
+        icon.textContent = '🔊';
+        text.textContent = 'Audio Activo';
+        initAudio();
+      } else {
+        icon.textContent = '🔇';
+        text.textContent = 'Audio Silenciado';
+      }
+    }
+
+    function playBuzzer() {
+      if (!PLC.audioEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.setValueAtTime(440, now + 0.12);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.36);
+    }
+
+    function playClick() {
+      if (!PLC.audioEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(40, now + 0.08);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    }
+
+    /* PESTAÑAS */
+    function switchTab(index) {
+      PLC.activeTab = index;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === index);
+      });
+      document.querySelectorAll('.tab-panel').forEach((pnl, idx) => {
+        pnl.classList.toggle('active', idx === index);
+      });
+    }
+
+    /* SELECTOR DE SUBSISTEMA MODULAR */
+    function setSubsystemMode(mode) {
+      PLC.subsystemMode = mode;
+      [1, 2, 3, 4].forEach(m => {
+        const btn = document.getElementById('btnSub' + m);
+        if (btn) btn.classList.toggle('active', m === mode);
+      });
+
+      const viewport = document.getElementById('stationViewport');
+      const cardTitle = document.getElementById('viewportCardTitle');
+      const badge = document.getElementById('viewportSubBadge');
+
+      viewport.className = 'station-viewport';
+
+      if (mode === 1) {
+        viewport.classList.add('focus-hair');
+        cardTitle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/></svg> Subsistema 1: Verificación de Cofia (I0.4)';
+        badge.textContent = 'Modo 1: Cofia';
+        logEvent('INFO', 'Visualización aislada: Subsistema de Detección Capilar (I0.4).');
+      } else if (mode === 2) {
+        viewport.classList.add('focus-mask');
+        cardTitle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Subsistema 2: Verificación de Cubrebocas (I0.5)';
+        badge.textContent = 'Modo 2: Mascarilla';
+        logEvent('INFO', 'Visualización aislada: Subsistema de Detección Facial / Cubrebocas (I0.5).');
+      } else if (mode === 3) {
+        viewport.classList.add('focus-hands');
+        cardTitle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Subsistema 3: Lavado Secuencial de Manos (5 Etapas)';
+        badge.textContent = 'Modo 3: Manos';
+        logEvent('INFO', 'Visualización aislada: Bacha y Grifería Automatizada de 5 Etapas.');
+      } else {
+        cardTitle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Estación Física & EPP';
+        badge.textContent = 'Modo 4: Integrado';
+        logEvent('INFO', 'Visualización global: Esclusa Sanitaria Total con EPP y Lavado.');
+      }
+    }
+
+    /* LOGGING SCADA */
+    function logEvent(tag, message) {
+      const logBody = document.getElementById('scadaLog');
+      if (!logBody) return;
+      const now = new Date();
+      const timeStr = `[${now.toTimeString().split(' ')[0]}.${String(now.getMilliseconds()).padStart(3, '0')}]`;
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `<span class="log-time">${timeStr}</span> <span class="log-tag-${tag}">[${tag}]</span> ${message}`;
+      logBody.appendChild(line);
+      logBody.scrollTop = logBody.scrollHeight;
+    }
+
+    function clearLog() {
+      const logBody = document.getElementById('scadaLog');
+      if (logBody) logBody.innerHTML = '';
+      logEvent('INFO', 'Registro de eventos reiniciado.');
+    }
+
+    /* CONTROL DE VELOCIDAD */
+    function setSpeed(mult) {
+      PLC.speedMultiplier = mult;
+      ['speed1x', 'speed3x', 'speed5x'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      if (mult === 1) document.getElementById('speed1x').classList.add('active');
+      if (mult === 3) document.getElementById('speed3x').classList.add('active');
+      if (mult === 5) document.getElementById('speed5x').classList.add('active');
+      logEvent('INFO', `Velocidad de simulación ajustada a ${mult}x.`);
+    }
+
+    /* ALERTAS */
+    function showAlert(title, details) {
+      const alert = document.getElementById('abandonAlert');
+      const t = document.getElementById('abandonAlertTitle');
+      const d = document.getElementById('abandonAlertDetails');
+      if (t) t.textContent = title;
+      if (d) d.textContent = details;
+      if (alert) alert.classList.add('show');
+    }
+
+    function dismissAlert() {
+      const alert = document.getElementById('abandonAlert');
+      if (alert) alert.classList.remove('show');
+    }
+
+    /* TOGGLES DE ENTRADAS DIGITALES */
+    function toggleHairnet() {
+      initAudio();
+      PLC.I0_4 = !PLC.I0_4;
+      if (!PLC.I0_4) {
+        showAlert('¡INFRACCIÓN DE BIOSEGURIDAD CAPILAR!', 'Sensor I0.4 no detecta cofia reglamentaria. Riesgo de caída de cabello y Staphylococcus aureus. Compuerta BLOQUEADA.');
+        logEvent('ALARM', '¡ALERTA CAPILAR! Sensor I0.4=0 (Cabello expuesto).');
+        playBuzzer();
+      } else {
+        logEvent('SAFE', 'Sensor I0.4=1: Cofia colocada correctamente.');
+        dismissAlert();
+      }
+    }
+
+    function toggleMask() {
+      initAudio();
+      PLC.I0_5 = !PLC.I0_5;
+      if (!PLC.I0_5) {
+        showAlert('¡INFRACCIÓN RESPIRATORIA!', 'Sensor I0.5 detecta ausencia o mal sellado de mascarilla. Riesgo de microgotas y aerosoles biológicos. Compuerta BLOQUEADA.');
+        logEvent('ALARM', '¡ALERTA RESPIRATORIA! Sensor I0.5=0 (Mascarilla ausente).');
+        playBuzzer();
+      } else {
+        logEvent('SAFE', 'Sensor I0.5=1: Cubrebocas colocado correctamente.');
+        dismissAlert();
+      }
+    }
+
+    function togglePresence() {
+      initAudio();
+      PLC.I0_0 = !PLC.I0_0;
+      if (!PLC.I0_0) PLC.I0_1 = false;
+      logEvent('INFO', `Operario ${PLC.I0_0 ? 'se aproxima a la esclusa (I0.0=1)' : 'se retira de la estación (I0.0=0)'}.`);
+    }
+
+    function toggleHands() {
+      initAudio();
+      if (!PLC.I0_0 && !PLC.I0_1) PLC.I0_0 = true;
+      PLC.I0_1 = !PLC.I0_1;
+      logEvent('INFO', `Sensor de manos bajo lavamanos ${PLC.I0_1 ? 'detecta manos (I0.1=1)' : 'detecta ausencia de manos (I0.1=0)'}.`);
+    }
+
+    function simulateEarlyWithdrawal() {
+      initAudio();
+      if (PLC.M0_0 && !PLC.M0_5) {
+        PLC.I0_1 = false;
+        logEvent('ALARM', '¡Manos retiradas deliberadamente durante el lavado!');
+      } else {
+        PLC.I0_0 = true;
+        PLC.I0_1 = true;
+        setTimeout(() => { PLC.I0_1 = false; }, 1200);
+      }
+    }
+
+    function simulateEppRemoval() {
+      initAudio();
+      PLC.I0_5 = false; // Quitar mascarilla en pleno ciclo
+      logEvent('ALARM', '¡Simulación: Personal se quitó la mascarilla durante el ciclo!');
+    }
+
+    /* BOTONERA INDUSTRIAL */
+    function toggleEmergencyStop() {
+      initAudio();
+      PLC.I0_3 = !PLC.I0_3;
+      const btn = document.getElementById('btnEstop');
+      const text = document.getElementById('estopText');
+      if (PLC.I0_3) {
+        btn.classList.add('latched');
+        text.textContent = '⚠ EMERGENCIA ENCLAVADA (I0.3=1)';
+        logEvent('ALARM', '¡HONGO DE PARO DE EMERGENCIA ENCLAVADO! Salidas desenergizadas.');
+        playBuzzer();
+      } else {
+        btn.classList.remove('latched');
+        text.textContent = 'PARO DE EMERGENCIA (I0.3)';
+        logEvent('SAFE', 'Paro de emergencia rearmado a normal.');
+      }
+    }
+
+    function pressStop() {
+      initAudio();
+      PLC.I0_2 = true;
+      logEvent('INFO', 'Pulsador de STOP accionado (I0.2=1).');
+      setTimeout(() => { PLC.I0_2 = false; }, 300);
+    }
+
+    function resetCounter() {
+      initAudio();
+      PLC.C1.CV = 0;
+      logEvent('INFO', 'Contador CTU C1 reseteado a 0.');
+    }
+
+    /* DEMO AUTOMÁTICA */
+    function toggleDemoMode() {
+      initAudio();
+      PLC.demoMode = !PLC.demoMode;
+      const btn = document.getElementById('demoBtn');
+      const txt = document.getElementById('demoBtnText');
+      if (PLC.demoMode) {
+        PLC.demoStep = 0;
+        PLC.demoTimer = 0;
+        btn.classList.add('active');
+        txt.textContent = 'Detener Demo';
+        setSubsystemMode(4);
+        logEvent('INFO', 'Modo Demostración Automática ACTIVADO.');
+      } else {
+        btn.classList.remove('active');
+        txt.textContent = 'Demo Automática';
+        logEvent('INFO', 'Modo Demostración Automática DESACTIVADO.');
+      }
+    }
+
+    function handleDemoLogic(dt) {
+      if (!PLC.demoMode) return;
+      PLC.demoTimer += dt;
+
+      // Paso 0: Asegurar EPP y aproximar operario
+      if (PLC.demoStep === 0 && PLC.demoTimer > 0.8) {
+        PLC.I0_4 = true;
+        PLC.I0_5 = true;
+        PLC.I0_0 = true;
+        PLC.demoStep = 1;
+        PLC.demoTimer = 0;
+      }
+      // Paso 1: Colocar manos
+      else if (PLC.demoStep === 1 && PLC.demoTimer > 1.0) {
+        PLC.I0_1 = true;
+        PLC.demoStep = 2;
+        PLC.demoTimer = 0;
+      }
+      // Paso 2: Durante el ciclo, esperar desbloqueo
+      else if (PLC.demoStep === 2 && PLC.M_ACCESS_GRANT) {
+        PLC.demoStep = 3;
+        PLC.demoTimer = 0;
+      }
+      // Paso 3: Puerta abierta, retirar manos y cruzar
+      else if (PLC.demoStep === 3 && PLC.demoTimer > 1.5) {
+        PLC.I0_1 = false;
+        PLC.demoStep = 4;
+        PLC.demoTimer = 0;
+      }
+      // Paso 4: Final del paso, reiniciar operario
+      else if (PLC.demoStep === 4 && !PLC.M_ACCESS_GRANT) {
+        PLC.I0_0 = false;
+        PLC.demoStep = 0;
+        PLC.demoTimer = 0;
+      }
+    }
+
+    /* ==========================================================================
+       BUCLE DETERMINÍSTICO DEL PLC (50 MS)
+       ========================================================================== */
+    function plcScanCycle() {
+      const dt = (PLC.scanIntervalMs / 1000.0) * PLC.speedMultiplier;
+      handleDemoLogic(dt);
+
+      // 1. CONDICIÓN DE SEGURIDAD (M_RUN)
+      PLC.M_RUN = !PLC.I0_3 && !PLC.I0_2;
+
+      // 2. VALIDACIÓN EPP (M_EPP_OK)
+      PLC.M_EPP_OK = PLC.I0_4 && PLC.I0_5;
+
+      // 3. INTERBLOQUEO ANTI-VIOLACIÓN EPP EN CURSO
+      if (PLC.M0_0 && !PLC.M_EPP_OK) {
+        PLC.M0_8 = true;
+        PLC.M0_0 = false;
+        PLC.M_ACCESS_GRANT = false;
+        // Reset timers
+        PLC.T1.ET = 0; PLC.T1.DN = false; PLC.T1.IN = false;
+        PLC.T2.ET = 0; PLC.T2.DN = false; PLC.T2.IN = false;
+        PLC.T3.ET = 0; PLC.T3.DN = false; PLC.T3.IN = false;
+        PLC.T4.ET = 0; PLC.T4.DN = false; PLC.T4.IN = false;
+        playBuzzer();
+        showAlert('¡INFRACCIÓN DE EPP DETECTADA!', 'Operario se retiró la cofia o mascarilla durante el proceso. Ciclo reiniciado a 0s. Puerta BLOQUEADA.');
+        logEvent('ALARM', '¡ABORTO POR EPP! Cofia o mascarilla no conformes.');
+      }
+
+      // 4. INTERBLOQUEO ANTI-ABANDONO DE MANOS
+      if (PLC.M0_0 && !PLC.M0_5 && !PLC.I0_1) {
+        PLC.M0_6 = true;
+        PLC.M0_0 = false;
+        PLC.T1.ET = 0; PLC.T1.DN = false; PLC.T1.IN = false;
+        PLC.T2.ET = 0; PLC.T2.DN = false; PLC.T2.IN = false;
+        PLC.T3.ET = 0; PLC.T3.DN = false; PLC.T3.IN = false;
+        PLC.T4.ET = 0; PLC.T4.DN = false; PLC.T4.IN = false;
+        playBuzzer();
+        showAlert('¡INFRACCIÓN DE LAVADO DE MANOS!', 'Manos retiradas antes de tiempo. El ciclo ha vuelto a 0s. Cerradura BLOQUEADA.');
+        logEvent('ALARM', '¡ABORTO POR MANOS! Retiro antes de completar 36s.');
+      }
+
+      // Paro o Emergencia cortan el ciclo
+      if (!PLC.M_RUN) {
+        PLC.M0_0 = false;
+        PLC.M0_5 = false;
+        PLC.M_ACCESS_GRANT = false;
+        PLC.T1.ET = 0; PLC.T1.DN = false; PLC.T1.IN = false;
+        PLC.T2.ET = 0; PLC.T2.DN = false; PLC.T2.IN = false;
+        PLC.T3.ET = 0; PLC.T3.DN = false; PLC.T3.IN = false;
+        PLC.T4.ET = 0; PLC.T4.DN = false; PLC.T4.IN = false;
+        PLC.T5.ET = 0; PLC.T5.DN = false; PLC.T5.IN = false;
+      }
+
+      // 5. ARRANQUE PERMISIVO DE CICLO
+      // Exige Seguridad OK, EPP OK (Cofia + Cubrebocas), Presencia (I0.0) y Manos (I0.1)
+      if (PLC.M_RUN && PLC.M_EPP_OK && !PLC.M0_0 && !PLC.M0_5 && PLC.I0_0 && PLC.I0_1) {
+        PLC.M0_0 = true;
+        PLC.M0_6 = false;
+        PLC.M0_8 = false;
+        dismissAlert();
+        logEvent('STEP', 'Ciclo Sanitario M0.0 INICIADO. EPP Validado. Etapa 1: Jabón (3s).');
+      }
+
+      // 6. CASCADA TON T1..T4
+      // TON T1: Jabón (3s)
+      PLC.T1.IN = PLC.M0_0 && !PLC.M0_5;
+      if (PLC.T1.IN) {
+        PLC.T1.ET += dt;
+        if (PLC.T1.ET >= PLC.T1.PT) {
+          PLC.T1.ET = PLC.T1.PT;
+          if (!PLC.T1.DN) {
+            PLC.T1.DN = true;
+            logEvent('STEP', 'Etapa 1 (Jabón) lista. Iniciando Etapa 2: Frotado Mecánico (20s).');
+          }
+        }
+      } else {
+        PLC.T1.ET = 0;
+        PLC.T1.DN = false;
+      }
+
+      // TON T2: Frotado (20s)
+      PLC.T2.IN = PLC.M0_0 && PLC.T1.DN && !PLC.M0_5;
+      if (PLC.T2.IN) {
+        PLC.T2.ET += dt;
+        if (PLC.T2.ET >= PLC.T2.PT) {
+          PLC.T2.ET = PLC.T2.PT;
+          if (!PLC.T2.DN) {
+            PLC.T2.DN = true;
+            logEvent('STEP', 'Etapa 2 (Frotado 20s) lista. Iniciando Etapa 3: Enjuague con Agua (10s).');
+          }
+        }
+      } else {
+        PLC.T2.ET = 0;
+        PLC.T2.DN = false;
+      }
+
+      // TON T3: Enjuague (10s)
+      PLC.T3.IN = PLC.M0_0 && PLC.T2.DN && !PLC.M0_5;
+      if (PLC.T3.IN) {
+        PLC.T3.ET += dt;
+        if (PLC.T3.ET >= PLC.T3.PT) {
+          PLC.T3.ET = PLC.T3.PT;
+          if (!PLC.T3.DN) {
+            PLC.T3.DN = true;
+            logEvent('STEP', 'Etapa 3 (Enjuague) lista. Iniciando Etapa 4: Spray Desinfectante (3s).');
+          }
+        }
+      } else {
+        PLC.T3.ET = 0;
+        PLC.T3.DN = false;
+      }
+
+      // TON T4: Spray (3s)
+      PLC.T4.IN = PLC.M0_0 && PLC.T3.DN && !PLC.M0_5;
+      if (PLC.T4.IN) {
+        PLC.T4.ET += dt;
+        if (PLC.T4.ET >= PLC.T4.PT) {
+          PLC.T4.ET = PLC.T4.PT;
+          if (!PLC.T4.DN) {
+            PLC.T4.DN = true;
+            PLC.M0_5 = true; // Lavado terminado
+
+            // 7. PERMISIVO FINAL DE ACCESO
+            if (PLC.M_EPP_OK) {
+              PLC.M_ACCESS_GRANT = true;
+              PLC.C1.CV++;
+              playClick();
+              logEvent('STEP', `¡HIGIENE Y EPP VALIDADOS AL 100%! Cerradura Desbloqueada (Q0.3=1). CTU C1 = ${PLC.C1.CV}`);
+            } else {
+              logEvent('ALARM', '¡LAVADO TERMINADO PERO FALTA EPP! Puerta retenida.');
+            }
+          }
+        }
+      } else {
+        PLC.T4.ET = 0;
+        PLC.T4.DN = false;
+      }
+
+      // TON T5: Puerta Abierta (10s)
+      PLC.T5.IN = PLC.M_ACCESS_GRANT;
+      if (PLC.T5.IN) {
+        PLC.T5.ET += dt;
+        if (PLC.T5.ET >= PLC.T5.PT) {
+          PLC.T5.ET = PLC.T5.PT;
+          PLC.T5.DN = true;
+          // Auto-Reset
+          PLC.M_ACCESS_GRANT = false;
+          PLC.M0_5 = false;
+          PLC.M0_0 = false;
+          PLC.T5.ET = 0;
+          PLC.T5.DN = false;
+          PLC.T5.IN = false;
+          playClick();
+          logEvent('INFO', 'Tiempo de paso (10s) concluido. Puerta rebloqueada. Sistema en espera.');
+        }
+      } else {
+        PLC.T5.ET = 0;
+        PLC.T5.DN = false;
+      }
+
+      // 8. ASIGNACIÓN DE SALIDAS DIGITALES (Q0.0 A Q0.5)
+      if (PLC.M_RUN) {
+        PLC.Q0_0 = PLC.M0_0 && !PLC.T1.DN;
+        PLC.Q0_5 = PLC.M0_0 && PLC.T1.DN && !PLC.T2.DN;
+        PLC.Q0_1 = PLC.M0_0 && PLC.T2.DN && !PLC.T3.DN;
+        PLC.Q0_2 = PLC.M0_0 && PLC.T3.DN && !PLC.T4.DN;
+        PLC.Q0_3 = PLC.M_ACCESS_GRANT && !PLC.T5.DN;
+        PLC.Q0_4 = !PLC.Q0_3;
+      } else {
+        PLC.Q0_0 = false; PLC.Q0_1 = false; PLC.Q0_2 = false;
+        PLC.Q0_3 = false; PLC.Q0_5 = false; PLC.Q0_4 = true;
+      }
+
+      updateUI();
+    }
+
+    /* ACTUALIZACIÓN VISUAL DE LA INTERFAZ */
+    function updateUI() {
+      // 1. Badge Superior PLC
+      const badge = document.getElementById('plcBadge');
+      const badgeTxt = document.getElementById('plcStatusText');
+      if (PLC.I0_3) {
+        badge.className = 'plc-badge emergency';
+        badgeTxt.textContent = 'PLC: ¡PARO DE EMERGENCIA!';
+      } else if (PLC.M0_8 && !PLC.M0_0) {
+        badge.className = 'plc-badge alarm';
+        badgeTxt.textContent = 'PLC: REINICIO POR FALLA EPP';
+      } else if (PLC.M0_6 && !PLC.M0_0) {
+        badge.className = 'plc-badge alarm';
+        badgeTxt.textContent = 'PLC: REINICIO POR ABANDONO';
+      } else if (!PLC.M_RUN) {
+        badge.className = 'plc-badge';
+        badgeTxt.textContent = 'PLC: MODO STOP';
+      } else {
+        badge.className = 'plc-badge run';
+        badgeTxt.textContent = `PLC: MODO RUN (${Math.round(PLC.scanIntervalMs)}ms)`;
+      }
+
+      // 2. Botones de Simulación Humana
+      const setBtn = (id, badgeId, active, labelOn, labelOff) => {
+        const btn = document.getElementById(id);
+        const b = document.getElementById(badgeId);
+        if (btn) btn.classList.toggle('active', active);
+        if (b) b.textContent = active ? labelOn : labelOff;
+      };
+      setBtn('btnToggleHair', 'badgeI04', PLC.I0_4, 'OK (1)', 'FALLA (0)');
+      setBtn('btnToggleMask', 'badgeI05', PLC.I0_5, 'OK (1)', 'FALLA (0)');
+      setBtn('btnTogglePresence', 'badgeI00', PLC.I0_0, 'ON (1)', 'OFF (0)');
+      setBtn('btnToggleHands', 'badgeI01', PLC.I0_1, 'ON (1)', 'OFF (0)');
+
+      // 3. EPP Visual en Estación 2D
+      const avatar = document.getElementById('operatorAvatar');
+      const hairnet = document.getElementById('avatarHairnet');
+      const hairExposed = document.getElementById('avatarHairExposed');
+      const mask = document.getElementById('avatarMask');
+      const hairLens = document.getElementById('hairLens');
+      const hairBeam = document.getElementById('hairBeam');
+      const faceHousing = document.getElementById('faceHousing');
+      const faceBeam = document.getElementById('faceBeam');
+      const faceBeamText = document.getElementById('faceBeamText');
+
+      hairnet.classList.toggle('visible', PLC.I0_4);
+      hairExposed.style.display = PLC.I0_4 ? 'none' : 'block';
+      hairLens.classList.toggle('fault', !PLC.I0_4);
+      hairBeam.classList.toggle('fault', !PLC.I0_4);
+
+      mask.classList.toggle('visible', PLC.I0_5);
+      faceHousing.classList.toggle('fault', !PLC.I0_5);
+      faceBeam.classList.toggle('fault', !PLC.I0_5);
+      faceBeamText.textContent = PLC.I0_5 ? 'MASCARILLA OK' : '¡FALLA MASCARILLA!';
+
+      if (PLC.M_ACCESS_GRANT) {
+        avatar.className = 'operator-avatar passed';
+      } else if (PLC.I0_0) {
+        avatar.className = 'operator-avatar present';
+      } else {
+        avatar.className = 'operator-avatar';
+      }
+
+      document.getElementById('matLabel').classList.toggle('active', PLC.I0_0);
+      document.getElementById('irBeam').classList.toggle('detecting', PLC.I0_1);
+      const hands = document.getElementById('avatarHands');
+      hands.classList.toggle('present', PLC.I0_1);
+      hands.classList.toggle('scrubbing', PLC.Q0_5);
+
+      // Fluidos
+      document.getElementById('soapFlow').classList.toggle('active', PLC.Q0_0);
+      document.getElementById('waterFlow').classList.toggle('active', PLC.Q0_1);
+      document.getElementById('sprayFlow').classList.toggle('active', PLC.Q0_2);
+
+      // Baliza
+      document.getElementById('lampRed').classList.toggle('active', PLC.Q0_4);
+      document.getElementById('lampYellow').classList.toggle('active', PLC.Q0_5);
+      document.getElementById('lampGreen').classList.toggle('active', PLC.Q0_3);
+
+      // Puerta
+      const door = document.getElementById('doorWing');
+      const doorLed = document.getElementById('magLockLed');
+      const doorTxt = document.getElementById('doorStatusText');
+      door.classList.toggle('open', PLC.Q0_3);
+      doorLed.classList.toggle('unlocked', PLC.Q0_3);
+      if (PLC.Q0_3) {
+        doorTxt.innerHTML = '<span style="color:#15803D;">ACCESO CONCEDIDO<br>PUERTA LIBRE</span>';
+      } else {
+        doorTxt.innerHTML = 'BLOQUEADO<br>ACCESO DENEGADO';
+      }
+
+      // 4. Panel HMI
+      const pillHair = document.getElementById('eppHairPill');
+      const txtHair = document.getElementById('eppHairText');
+      pillHair.className = 'epp-badge-pill ' + (PLC.I0_4 ? 'valid' : 'invalid');
+      txtHair.textContent = PLC.I0_4 ? 'VALIDADA' : '¡FALLA!';
+
+      const pillMask = document.getElementById('eppMaskPill');
+      const txtMask = document.getElementById('eppMaskText');
+      pillMask.className = 'epp-badge-pill ' + (PLC.I0_5 ? 'valid' : 'invalid');
+      txtMask.textContent = PLC.I0_5 ? 'VALIDADO' : '¡FALLA!';
+
+      let activeStep = 0;
+      let stepName = 'ESPERANDO OPERARIO EN ESCLUSA...';
+      let currentET = 0;
+      let currentPT = 0;
+
+      if (!PLC.M_RUN) {
+        stepName = 'SISTEMA DETENIDO / PARO ACTIVO';
+      } else if (!PLC.M_EPP_OK) {
+        stepName = '⚠ INFRACCIÓN EPP: COFIA O CUBREBOCAS AUSENTES';
+      } else if (PLC.M0_0 && !PLC.T1.DN) {
+        activeStep = 1;
+        stepName = '1. DOSIFICANDO JABÓN LÍQUIDO';
+        currentET = PLC.T1.ET; currentPT = PLC.T1.PT;
+      } else if (PLC.M0_0 && PLC.T1.DN && !PLC.T2.DN) {
+        activeStep = 2;
+        stepName = '2. FROTADO DE MANOS (LUZ AMARILLA)';
+        currentET = PLC.T2.ET; currentPT = PLC.T2.PT;
+      } else if (PLC.M0_0 && PLC.T2.DN && !PLC.T3.DN) {
+        activeStep = 3;
+        stepName = '3. ENJUAGUE CON AGUA TEMPLADA';
+        currentET = PLC.T3.ET; currentPT = PLC.T3.PT;
+      } else if (PLC.M0_0 && PLC.T3.DN && !PLC.T4.DN) {
+        activeStep = 4;
+        stepName = '4. ATOMIZANDO SPRAY DESINFECTANTE';
+        currentET = PLC.T4.ET; currentPT = PLC.T4.PT;
+      } else if (PLC.M_ACCESS_GRANT) {
+        activeStep = 5;
+        stepName = '5. ACCESO CONCEDIDO — PUERTA LIBRE';
+        currentET = PLC.T5.ET; currentPT = PLC.T5.PT;
+      }
+
+      document.getElementById('hmiStepNumber').textContent = `ETAPA ${activeStep} / 5`;
+      document.getElementById('hmiStageName').innerHTML = stepName;
+      document.getElementById('hmiPT').textContent = `${currentPT.toFixed(1)} s`;
+      document.getElementById('hmiET').textContent = `${currentET.toFixed(1)} s`;
+
+      const remaining = Math.max(0, currentPT - currentET);
+      document.getElementById('stageSeconds').textContent = currentPT > 0 ? `${Math.ceil(remaining)}s` : '0s';
+
+      const circle = document.getElementById('circleProgress');
+      const maxOffset = 238;
+      if (currentPT > 0) {
+        circle.style.strokeDashoffset = (maxOffset * (1 - (currentET / currentPT))).toString();
+      } else {
+        circle.style.strokeDashoffset = '238';
+      }
+
+      if (activeStep === 1) circle.style.stroke = 'var(--soap-color)';
+      else if (activeStep === 2) circle.style.stroke = 'var(--yellow-scrub)';
+      else if (activeStep === 3) circle.style.stroke = 'var(--water-color)';
+      else if (activeStep === 4) circle.style.stroke = 'var(--mist-color)';
+      else if (activeStep === 5) circle.style.stroke = 'var(--green-unlock)';
+      else circle.style.stroke = '#334155';
+
+      const lockStatus = document.getElementById('hmiLockStatus');
+      if (PLC.Q0_3) {
+        lockStatus.textContent = 'LIBERADA (10s)';
+        lockStatus.style.color = '#22C55E';
+      } else {
+        lockStatus.textContent = 'ENERGIZADA (BLOQ)';
+        lockStatus.style.color = '#EF4444';
+      }
+
+      // Barra global (46s)
+      let globalSec = 0;
+      if (activeStep === 1) globalSec = PLC.T1.ET;
+      else if (activeStep === 2) globalSec = 3.0 + PLC.T2.ET;
+      else if (activeStep === 3) globalSec = 23.0 + PLC.T3.ET;
+      else if (activeStep === 4) globalSec = 33.0 + PLC.T4.ET;
+      else if (activeStep === 5) globalSec = 36.0 + PLC.T5.ET;
+
+      const globalPercent = Math.min(100, (globalSec / 46.0) * 100);
+      document.getElementById('globalProgressBar').style.width = `${globalPercent}%`;
+      document.getElementById('globalProgressText').textContent = `${globalSec.toFixed(1)} / 46.0 s (${Math.round(globalPercent)}%)`;
+
+      document.getElementById('counterVal').textContent = String(PLC.C1.CV).padStart(4, '0');
+      document.getElementById('ladder_cv').textContent = String(PLC.C1.CV);
+
+      // LEDs I/O
+      const setLed = (id, active, activeClass = 'active-in') => {
+        const el = document.getElementById(id);
+        if (el) el.className = 'plc-led ' + (active ? activeClass : '');
+      };
+      setLed('ledI00', PLC.I0_0, 'active-in');
+      setLed('ledI01', PLC.I0_1, 'active-in');
+      setLed('ledI02', PLC.I0_2, 'active-red');
+      setLed('ledI03', PLC.I0_3, 'active-red');
+      setLed('ledI04', PLC.I0_4, 'active-in');
+      setLed('ledI05', PLC.I0_5, 'active-in');
+
+      setLed('ledQ00', PLC.Q0_0, 'active-out');
+      setLed('ledQ05', PLC.Q0_5, 'active-amber');
+      setLed('ledQ01', PLC.Q0_1, 'active-out');
+      setLed('ledQ02', PLC.Q0_2, 'active-out');
+      setLed('ledQ03', PLC.Q0_3, 'active-in');
+      setLed('ledQ04', PLC.Q0_4, 'active-red');
+
+      // Ladder & Logic Gates
+      updateLadderUI();
+      updateLogicGatesUI();
+    }
+
+    /* ACTUALIZACIÓN DEL DIAGRAMA LADDER */
+    function updateLadderUI() {
+      const setC = (id, active) => { const el = document.getElementById(id); if (el) el.classList.toggle('active', active); };
+      const setCoil = (id, active) => { const el = document.getElementById(id); if (el) el.classList.toggle('active', active); };
+      const setW = (id, active) => { const el = document.getElementById(id); if (el) el.classList.toggle('active', active); };
+
+      // Net 1 (Seguridad)
+      setC('c_not_I03', !PLC.I0_3);
+      setC('c_not_I02', !PLC.I0_2);
+      setCoil('coil_MRUN', PLC.M_RUN);
+      setW('w_1_1', true);
+      setW('w_1_2', !PLC.I0_3);
+      setW('w_1_3', PLC.M_RUN);
+      setW('w_1_4', PLC.M_RUN);
+
+      // Net 2 (EPP)
+      setC('c_I04_epp', PLC.I0_4);
+      setC('c_I05_epp', PLC.I0_5);
+      setCoil('coil_MEPP', PLC.M_EPP_OK);
+      setW('w_2_1', true);
+      setW('w_2_2', PLC.I0_4);
+      setW('w_2_3', PLC.M_EPP_OK);
+      setW('w_2_4', PLC.M_EPP_OK);
+
+      // Net 3 (Arranque)
+      setC('c_MRUN_start', PLC.M_RUN);
+      setC('c_MEPP_start', PLC.M_EPP_OK);
+      setC('c_I00_start', PLC.I0_0);
+      setC('c_I01_start', PLC.I0_1);
+      setC('c_not_M05_start', !PLC.M0_5);
+      const n3 = PLC.M_RUN && PLC.M_EPP_OK && PLC.I0_0 && PLC.I0_1 && !PLC.M0_5;
+      setCoil('coil_M00', PLC.M0_0);
+      setW('w_3_1', true);
+      setW('w_3_2', PLC.M_RUN);
+      setW('w_3_3', PLC.M_RUN && PLC.M_EPP_OK);
+      setW('w_3_4', PLC.M_RUN && PLC.M_EPP_OK && PLC.I0_0);
+      setW('w_3_5', PLC.M_RUN && PLC.M_EPP_OK && PLC.I0_0 && PLC.I0_1);
+      setW('w_3_6', n3);
+      setW('w_3_7', PLC.M0_0);
+
+      // Net 4 (Roja)
+      setC('c_not_Q03', !PLC.Q0_3);
+      setCoil('coil_Q04', PLC.Q0_4);
+      setW('w_4_1', true);
+      setW('w_4_2', !PLC.Q0_3);
+      setW('w_4_3', PLC.Q0_4);
+
+      // Net 5 & 6 (Jabón)
+      setC('c_M00_step1', PLC.M0_0);
+      setC('c_not_T1DN', !PLC.T1.DN);
+      setCoil('coil_Q00', PLC.Q0_0);
+      setW('w_5_1', true); setW('w_5_2', PLC.M0_0); setW('w_5_3', PLC.Q0_0); setW('w_5_4', PLC.Q0_0);
+
+      setC('c_M00_T1', PLC.M0_0);
+      setW('w_6_1', true); setW('w_6_2', PLC.M0_0); setW('w_6_3', PLC.T1.DN);
+      document.getElementById('t1_et').textContent = `${PLC.T1.ET.toFixed(1)} s`;
+      document.getElementById('t1_dn').textContent = PLC.T1.DN ? '1' : '0';
+      const ton1 = document.getElementById('ton_T1');
+      ton1.classList.toggle('active', PLC.T1.IN && !PLC.T1.DN);
+      ton1.classList.toggle('done', PLC.T1.DN);
+
+      // Net 7 & 8 (Frotado)
+      setC('c_T1DN_step2', PLC.T1.DN);
+      setC('c_not_T2DN', !PLC.T2.DN);
+      setCoil('coil_Q05', PLC.Q0_5);
+      setW('w_7_1', true); setW('w_7_2', PLC.T1.DN); setW('w_7_3', PLC.Q0_5); setW('w_7_4', PLC.Q0_5);
+
+      setC('c_T1DN_T2', PLC.T1.DN);
+      setW('w_8_1', true); setW('w_8_2', PLC.T1.DN); setW('w_8_3', PLC.T2.DN);
+      document.getElementById('t2_et').textContent = `${PLC.T2.ET.toFixed(1)} s`;
+      document.getElementById('t2_dn').textContent = PLC.T2.DN ? '1' : '0';
+      const ton2 = document.getElementById('ton_T2');
+      ton2.classList.toggle('active', PLC.T2.IN && !PLC.T2.DN);
+      ton2.classList.toggle('done', PLC.T2.DN);
+
+      // Net 9 & 10 (Agua)
+      setC('c_T2DN_step3', PLC.T2.DN);
+      setC('c_not_T3DN', !PLC.T3.DN);
+      setCoil('coil_Q01', PLC.Q0_1);
+      setW('w_9_1', true); setW('w_9_2', PLC.T2.DN); setW('w_9_3', PLC.Q0_1); setW('w_9_4', PLC.Q0_1);
+
+      setC('c_T2DN_T3', PLC.T2.DN);
+      setW('w_10_1', true); setW('w_10_2', PLC.T2.DN); setW('w_10_3', PLC.T3.DN);
+      document.getElementById('t3_et').textContent = `${PLC.T3.ET.toFixed(1)} s`;
+      document.getElementById('t3_dn').textContent = PLC.T3.DN ? '1' : '0';
+      const ton3 = document.getElementById('ton_T3');
+      ton3.classList.toggle('active', PLC.T3.IN && !PLC.T3.DN);
+      ton3.classList.toggle('done', PLC.T3.DN);
+
+      // Net 11 & 12 (Spray)
+      setC('c_T3DN_step4', PLC.T3.DN);
+      setC('c_not_T4DN', !PLC.T4.DN);
+      setCoil('coil_Q02', PLC.Q0_2);
+      setW('w_11_1', true); setW('w_11_2', PLC.T3.DN); setW('w_11_3', PLC.Q0_2); setW('w_11_4', PLC.Q0_2);
+
+      setC('c_T3DN_T4', PLC.T3.DN);
+      setW('w_12_1', true); setW('w_12_2', PLC.T3.DN); setW('w_12_3', PLC.T4.DN);
+      document.getElementById('t4_et').textContent = `${PLC.T4.ET.toFixed(1)} s`;
+      document.getElementById('t4_dn').textContent = PLC.T4.DN ? '1' : '0';
+      const ton4 = document.getElementById('ton_T4');
+      ton4.classList.toggle('active', PLC.T4.IN && !PLC.T4.DN);
+      ton4.classList.toggle('done', PLC.T4.DN);
+
+      // Net 13 (Fin Lavado)
+      setC('c_T4DN_step5', PLC.T4.DN);
+      setCoil('coil_M05', PLC.M0_5);
+      setW('w_13_1', true); setW('w_13_2', PLC.T4.DN); setW('w_13_3', PLC.M0_5);
+
+      // Net 14 (Permisivo Final)
+      setC('c_M05_final', PLC.M0_5);
+      setC('c_I04_final', PLC.I0_4);
+      setC('c_I05_final', PLC.I0_5);
+      setCoil('coil_M_GRANT', PLC.M_ACCESS_GRANT);
+      setW('w_14_1', true);
+      setW('w_14_2', PLC.M0_5);
+      setW('w_14_3', PLC.M0_5 && PLC.I0_4);
+      setW('w_14_4', PLC.M0_5 && PLC.I0_4 && PLC.I0_5);
+      setW('w_14_5', PLC.M_ACCESS_GRANT);
+
+      // Net 15 & 16 (Puerta)
+      setC('c_MGRANT_T5', PLC.M_ACCESS_GRANT);
+      setW('w_15_1', true); setW('w_15_2', PLC.M_ACCESS_GRANT); setW('w_15_3', PLC.T5.DN);
+      document.getElementById('t5_et').textContent = `${PLC.T5.ET.toFixed(1)} s`;
+      document.getElementById('t5_dn').textContent = PLC.T5.DN ? '1' : '0';
+      const ton5 = document.getElementById('ton_T5');
+      ton5.classList.toggle('active', PLC.T5.IN && !PLC.T5.DN);
+      ton5.classList.toggle('done', PLC.T5.DN);
+
+      setC('c_MGRANT_Q03', PLC.M_ACCESS_GRANT);
+      setC('c_not_T5DN', !PLC.T5.DN);
+      setCoil('coil_Q03', PLC.Q0_3);
+      setW('w_16_1', true); setW('w_16_2', PLC.M_ACCESS_GRANT); setW('w_16_3', PLC.Q0_3); setW('w_16_4', PLC.Q0_3);
+
+      // Net 17 (CTU)
+      setC('c_MGRANT_C1', PLC.M_ACCESS_GRANT);
+      setW('w_17_1', true); setW('w_17_2', PLC.M_ACCESS_GRANT); setW('w_17_3', true);
+
+      // Net 18 (Reset T5)
+      setC('c_T5DN_reset', PLC.T5.DN);
+      setCoil('coil_reset_MGRANT', PLC.T5.DN);
+      setCoil('coil_reset_M05', PLC.T5.DN);
+      setCoil('coil_reset_M00', PLC.T5.DN);
+      setW('w_18_1', true); setW('w_18_2', PLC.T5.DN); setW('w_18_3', PLC.T5.DN); setW('w_18_4', PLC.T5.DN); setW('w_18_5', PLC.T5.DN);
+
+      // Net 19 & 20 (Falla EPP)
+      const eppFault = PLC.I0_0 && !PLC.M_EPP_OK;
+      setC('c_M00_epp_fault', PLC.I0_0);
+      setC('c_not_MEPP_fault', !PLC.M_EPP_OK);
+      setCoil('coil_M08', PLC.M0_8);
+      setW('w_19_1', true); setW('w_19_2', PLC.I0_0); setW('w_19_3', eppFault); setW('w_19_4', PLC.M0_8);
+
+      setC('c_M08_abort', PLC.M0_8);
+      setCoil('coil_abort_epp_m00', PLC.M0_8);
+      setCoil('coil_abort_epp_grant', PLC.M0_8);
+      setW('w_20_1', true); setW('w_20_2', PLC.M0_8); setW('w_20_3', PLC.M0_8); setW('w_20_4', PLC.M0_8);
+
+      // Net 21 & 22 (Falla Manos)
+      const handsFault = PLC.M0_0 && !PLC.M0_5 && !PLC.I0_1;
+      setC('c_M00_hands_fault', PLC.M0_0);
+      setC('c_not_M05_fault', !PLC.M0_5);
+      setC('c_not_I01_fault', !PLC.I0_1);
+      setCoil('coil_M06', PLC.M0_6);
+      setW('w_21_1', true); setW('w_21_2', PLC.M0_0); setW('w_21_3', PLC.M0_0 && !PLC.M0_5); setW('w_21_4', handsFault); setW('w_21_5', PLC.M0_6);
+
+      setC('c_M06_abort', PLC.M0_6);
+      setCoil('coil_abort_hands_m00', PLC.M0_6);
+      setW('w_22_1', true); setW('w_22_2', PLC.M0_6); setW('w_22_3', PLC.M0_6);
+    }
+
+    /* ACTUALIZACIÓN DEL DIAGRAMA DE COMPUERTAS */
+    function updateLogicGatesUI() {
+      const act = '#16A34A';
+      const inact = '#94A3B8';
+      const setStroke = (id, active) => { const el = document.getElementById(id); if (el) el.setAttribute('stroke', active ? act : inact); };
+      const setFill = (id, active, c = '#22C55E') => { const el = document.getElementById(id); if (el) el.setAttribute('fill', active ? c : '#CBD5E1'); };
+
+      // Nodos
+      setFill('nodeI00', PLC.I0_0, '#DCFCE7');
+      setFill('nodeI01', PLC.I0_1, '#DCFCE7');
+      setFill('nodeI04', PLC.I0_4, '#DCFCE7');
+      setFill('nodeI05', PLC.I0_5, '#DCFCE7');
+      setFill('nodeI02', PLC.I0_2, '#FEE2E2');
+      setFill('nodeI03', PLC.I0_3, '#FEE2E2');
+
+      // Wires
+      setStroke('wireI00', PLC.I0_0);
+      setStroke('wireI01', PLC.I0_1);
+      setStroke('wireI04', PLC.I0_4);
+      setStroke('wireI05', PLC.I0_5);
+      setStroke('wireEppOut', PLC.M_EPP_OK);
+      setStroke('wireEppToFinal', PLC.M_EPP_OK);
+      setStroke('wireNotI02', !PLC.I0_2);
+      setStroke('wireNotI03', !PLC.I0_3);
+
+      const andOut = PLC.I0_0 && PLC.I0_1 && PLC.M_EPP_OK && !PLC.I0_2 && !PLC.I0_3;
+      setStroke('wireAndOut', andOut);
+      setStroke('wireM00Bus', PLC.M0_0);
+
+      setStroke('wireTon1Out', PLC.Q0_0);
+      setStroke('wireTon1Cascade', PLC.T1.DN);
+      setStroke('wireTon2Out', PLC.Q0_5);
+      setStroke('wireTon2Cascade', PLC.T2.DN);
+      setStroke('wireTon3Out', PLC.Q0_1);
+      setStroke('wireTon3Cascade', PLC.T3.DN);
+      setStroke('wireTon4Out', PLC.Q0_2);
+      setStroke('wireTon4ToFinal', PLC.M0_5);
+
+      setStroke('wireFinalAndOut', PLC.M_ACCESS_GRANT);
+      setStroke('wireTon5Out', PLC.Q0_3);
+      setStroke('wireRedInvert', PLC.Q0_4);
+
+      // Círculos salida
+      setFill('circleQ00', PLC.Q0_0, '#0284C7');
+      setFill('circleQ05', PLC.Q0_5, '#F59E0B');
+      setFill('circleQ01', PLC.Q0_1, '#0EA5E9');
+      setFill('circleQ02', PLC.Q0_2, '#14B8A6');
+      setFill('circleQ03', PLC.Q0_3, '#16A34A');
+      setFill('circleQ04', PLC.Q0_4, '#DC2626');
+
+      const g1 = document.getElementById('gateTon1Val'); if (g1) g1.textContent = `ET: ${PLC.T1.ET.toFixed(1)}s`;
+      const g2 = document.getElementById('gateTon2Val'); if (g2) g2.textContent = `ET: ${PLC.T2.ET.toFixed(1)}s`;
+      const g3 = document.getElementById('gateTon3Val'); if (g3) g3.textContent = `ET: ${PLC.T3.ET.toFixed(1)}s`;
+      const g4 = document.getElementById('gateTon4Val'); if (g4) g4.textContent = `ET: ${PLC.T4.ET.toFixed(1)}s`;
+      const g5 = document.getElementById('gateTon5Val'); if (g5) g5.textContent = `ET: ${PLC.T5.ET.toFixed(1)}s`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Event listeners para los nodos de compuertas
+      const addClick = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+      addClick('nodeI00', togglePresence);
+      addClick('nodeI01', toggleHands);
+      addClick('nodeI04', toggleHairnet);
+      addClick('nodeI05', toggleMask);
+      addClick('nodeI02', pressStop);
+      addClick('nodeI03', toggleEmergencyStop);
+
+      // Iniciar bucle de escaneo a 50ms
+      setInterval(plcScanCycle, PLC.scanIntervalMs);
+    });
+  </script>
+</body>
+</html>
+"""
+
+if __name__ == "__main__":
+    write_html()
